@@ -1,0 +1,33 @@
+{
+  "type": "thecrowns:crown_builder",
+  "category": "equipment",
+  "required_tier": 3,
+  "pattern": [
+    "GAG",
+    "DBE",
+    "GSG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "A": {
+      "tag": "thecrowns:amethyst_buds"
+    },
+    "D": {
+      "item": "minecraft:diamond_block"
+    },
+    "B": {
+      "item": "minecraft:beacon"
+    },
+    "E": {
+      "item": "minecraft:emerald_block"
+    },
+    "S": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+  "result": {
+    "item": "thecrowns:crown_of_light"
+  }
+}

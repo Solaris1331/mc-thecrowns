@@ -1,0 +1,15 @@
+{
+  "type": "thecrowns:glitched_crown_fusion",
+  "template": {
+    "item": "minecraft:nether_star"
+  },
+  "base": {
+    "item": "thecrowns:glitched_crown"
+  },
+  "addition": {
+    "tag": "thecrowns:glitched_crown_fusion_additions"
+  },
+  "result": {
+    "item": "thecrowns:glitched_crown"
+  }
+}

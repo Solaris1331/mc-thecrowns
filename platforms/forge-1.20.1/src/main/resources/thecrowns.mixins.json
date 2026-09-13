@@ -1,0 +1,38 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "com.thecrowns.mixin",
+  "plugin": "com.thecrowns.mixin.CrownMixinPlugin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "thecrowns.refmap.json",
+  "mixins": [
+    "DamageSourceMixin",
+    "EntityMixin",
+    "ExplosionMixin",
+    "LivingEntityHealthAccessor",
+    "LivingEntityMixin",
+    "PlayerMixin",
+    "InventoryMixin",
+    "ItemStackMixin",
+    "ItemStackHandlerMixin",
+    "ServerGamePacketListenerImplMixin",
+    "EnchantmentHelperMixin",
+    "ServerLevelMixin",
+    "CuriosDynamicStackHandlerMixin",
+    "ShulkerBulletMixin",
+    "TransientCraftingContainerAccessor",
+    "CraftingMenuAccessor",
+    "InventoryMenuAccessor",
+    "InventoryMenuArmorSlotMixin",
+    "ForgeHooksMixin",
+    "LivingEntityDeadAccessor",
+    "ServerPlayerMixin",
+    "ItemEntityMixin"
+  ],
+  "client": [
+    "client.AdvancementDisplayInfoMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

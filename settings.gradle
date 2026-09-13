@@ -6,4 +6,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'GlitchedCrown-Dragonfyre-Forge-1.20.1'
+rootProject.name = 'mc-thecrowns'
+
+include 'platforms:forge-1.20.1'

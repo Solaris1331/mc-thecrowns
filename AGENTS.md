@@ -1,103 +1,30 @@
-# The Crowns 개발 지침
+# The Crowns development guide
 
-## 프로젝트 기준
+## Project line
 
-- 모드명: The Crowns
-- modid: `glitchedcrown`
-- Minecraft: 1.20.1
-- Forge: 47.4.0
-- Java: 17
-- Curios: 5.14.1+1.20.1
-- 현재 개발 버전: 1.5.3
-- 네트워크 프로토콜: 12
-- Windows 빌드 명령: `.\gradlew.bat clean build`
-- 현재 `build.gradle` 기준 실제 결과물: `build/libs/glitchedcrown-1.5.3-forge-1.20.1-1.5.3.jar`
-- 배포용 이름이 `TheCrowns-1.5.3-Forge-1.20.1.jar`로 필요하면 검증 완료 후 별도 복사/이름 변경한다.
+- Mod name: The Crowns
+- Mod ID: `thecrowns`
+- Current line: `1.0.0-beta.1`
+- Supported targets: Forge 1.20.1, NeoForge 1.21, NeoForge 1.21.1
+- Release JARs begin with 1.0.0. Do not publish legacy 1.5.3 binaries from this repository.
 
-## 변경 보존 원칙
+## Repository layout
 
-- 사용자의 기존 변경 사항이나 관련 없는 파일을 임의로 되돌리지 않는다.
-- 동작을 바꿀 때는 `PROJECT_STATE_KO.md`의 확정 요구사항과 현재 구현 상태를 먼저 확인한다.
-- 네트워크 패킷 호환성이 실제로 깨지지 않는 한 프로토콜 12를 변경하지 않는다.
-- 새 배포 버전 작업 시 `gradle.properties`, `mods.toml` 치환 결과, JAR manifest의 버전을 함께 확인한다.
+- `platforms/forge-1.20.1`: Forge 1.20.1 implementation, Java 17.
+- `platforms/neoforge-1.21`: reserved for the NeoForge 1.21 implementation, Java 21.
+- `platforms/neoforge-1.21.1`: reserved for the NeoForge 1.21.1 implementation, Java 21.
+- `docs/legacy/forge-1.20.1`: preserved `glitchedcrown` 1.5.3 beta history and documentation.
 
-## Config 규칙
+## Compatibility and safety
 
-- `CrownServerConfig`는 COMMON이 아닌 SERVER config를 사용한다.
-- 파일명은 `glitchedcrown-server.toml`이다.
-- 실제 위치는 `<월드>/serverconfig/glitchedcrown-server.toml`이다.
-- `.minecraft/config/`에 생성된다고 안내하지 않는다.
+- `thecrowns` is a clean namespace break from `glitchedcrown`; never promise old-world item or config compatibility without an explicit migration implementation.
+- Keep the three targets functionally aligned. Document intentional platform differences in the changelog.
+- Keep client-only references out of shared/common server paths and verify dedicated-server startup for every platform change.
+- Preserve the legacy feature contract while porting unless a newer approved requirement replaces it.
+- Do not delete user worlds, build caches, or legacy source history.
 
-## Curios 및 장착 규칙
+## Verification
 
-- 모든 Crown은 바닐라 머리 슬롯과 Curios `head`/`hat` 호환성을 유지한다.
-- 신규 Crown 4종(`temporal_crown`, `frost_crown`, `divine_crown`, `cursed_crown`)을 Curios `head.json`과 `hat.json`에서 제거하지 않는다.
-- 저주받은 왕관은 일반 상태에서 클릭, Shift 클릭, 숫자키 교환, 버리기, 드래그 등 슬롯 상호작용으로 해제할 수 없어야 한다.
-- Curios `canUnequip`, `CurioUnequipEvent`, 바닐라 머리 슬롯 및 컨테이너 패킷 경계를 함께 지킨다.
-- 저주받은 왕관의 합법적 해제 예외는 크리에이티브, Glitched, Unleashed, U² 착용 상태이다.
-
-## 사망 유지 규칙
-
-- 시간의 왕관과 저주받은 왕관만 사망 유지 대상이다. 신성한 왕관은 대상이 아니다.
-- Corail Tombstone 등 외부 사망/무덤 처리보다 먼저 보존 대상 원본 스택을 격리한다.
-- 바닐라 인벤토리/갑옷과 Curios의 원래 슬롯 정보를 보존한다.
-- 복원 티켓은 복원 작업 전에 먼저 소비하고 정확히 한 번만 복원한다.
-- 외부 모드가 이미 보존한 스택은 고유 마커로 감지해 중복 복원하지 않는다.
-- Curios `ALWAYS_KEEP`는 보조 방어로 유지하되 그것만 의존하지 않는다.
-- 사망이 취소되거나 실제 리스폰이 발생한 경우를 모두 안전하게 처리한다.
-- 일반 플레이 틱에서 사라진 Crown을 NBT 스냅샷으로 재생성하거나 강제 재장착하지 않는다. 1.5.1 복사 버그 방식은 재도입 금지이다.
-- 저주받은 왕관 착용 사망 시 XP는 가능한 이른 시점에 0으로 만들고 XP 오브도 생성하지 않는다.
-
-## 저주받은 왕관 변환 규칙
-
-- Tier I~III Crown에 `Enchantment.isCurse()`가 true인 인챈트가 하나라도 붙으면 저주받은 왕관으로 변환한다.
-- 변환 시 원인이 된 저주를 포함한 모든 curse 인챈트를 제거한다.
-- 비저주 인챈트, 필요한 원본 NBT, 개수 및 허용 가능한 내구도 상태는 보존한다.
-- 저주 인챈트 NBT를 통째로 복사한 채 남겨 두지 않는다.
-
-## 확정 콘텐츠 규칙
-
-- 로어북 이름은 `제왕의 길` / `Path of Sovereignty`이다.
-- 로어북 첫 문장은 `The Crowns에 오신 것을 환영합니다.` / `Welcome to The Crowns.`이다.
-- U²는 로어북과 Creative에서 숨긴다.
-- Unleashed는 Glitched 발전과제 달성 전 로어북과 Tier IV Builder 목록에서 난독화한다.
-- Unleashed 레시피의 우하단 재료는 NBT와 무관한 `minecraft:spawner`이며 JEI에서는 기본 숨김이다.
-- 저주받은 왕관 로어북 항목은 `불길한 유물` 발전과제 달성 전 완전히 숨긴다.
-- 저주 관련 발전과제는 비밀 처리한다.
-- 시간의 왕관 툴팁/로어북에는 체력·허기·긍정 효과·경험치의 높은 쪽을 유지한다는 상세 문장을 표시하지 않는다. 실제 역행 동작은 유지한다.
-- 신성한 왕관 툴팁/로어북에는 획득할 긍정 효과의 강도·지속시간·목록을 나열한 상세 문장을 표시하지 않는다. 실제 효과 동작은 유지한다.
-- 서리의 왕관 설명은 `동결 피해와 가루눈`, `추운 곳의 생명체`, `서리 가시`, `영원설`의 네 문장 구성을 유지한다.
-- 서리의 왕관 착용자는 북극곰·스트레이에게 적대받지 않으며, 기본 온도 0.15 이하의 차가운 바이옴에서는 드라운드에게도 적대받지 않는다.
-- 저주받은 왕관의 기본 귀속 설명은 `착용자에게 영원히 귀속됩니다.`이다.
-- 저주 해제 안내는 크리에이티브일 때 `신의 힘...`, Glitched/Unleashed/U² 착용 중일 때 `강대한 왕관의 힘...` 문장만 조건부 표시한다.
-- 저주받은 왕관 `해방` 지속시간은 60초, 반경은 30블록, 쿨다운은 600초이다.
-- 저주받은 왕관 `해방` 설명은 `자신의 저주에서 해방`으로 표현하고, 시전 직전 최대 체력만큼 회복한다는 상세 문장은 툴팁과 로어북에 표시하지 않는다. 실제 고정 회복 동작은 유지한다.
-- Glitched/Unleashed/U²의 지속형 야간 투시와 수중 호흡은 4초마다 30초를 부여해 야간 투시 종료 경고 구간에 진입하지 않게 한다. 포화는 1틱 펄스를 유지한다.
-
-## 완료 전 검증
-
-- Java 17로 `.\gradlew.bat clean build`를 실행한다.
-- 공용 레지스트리·아이템·로직 클래스에서 `net.minecraft.client.*` 타입을 직접 참조하지 않는다. 툴팁 등 클라이언트 상태 조회는 `client` 전용 헬퍼로 격리한다.
-- 전용 서버 변경 또는 공용 클래스 변경 후 Java 17 `runServer`가 월드 스폰 생성과 `Done`까지 도달하는지 확인한다.
-- 모든 `src/main/resources/**/*.json`을 파싱한다.
-- `en_us.json`과 `ko_kr.json`의 키 집합이 일치하는지 확인한다.
-- Curios `head`/`hat` 태그에 신규 Crown 4종이 모두 있는지 확인한다.
-- 시간/저주 Crown의 사망 전 격리, 티켓 선소비, 마커 기반 중복 방지, clone 데이터 전달을 정적으로 확인한다.
-- 저주 변환에서 모든 curse 제거와 비저주 인챈트 보존을 확인한다.
-- 최종 JAR에 모드 코드와 리소스가 포함되고, 버전 1.5.3 및 프로토콜 12가 유지되는지 확인한다.
-- 실제 Minecraft 통합 테스트가 수행되지 않았다면 정적 검증이나 빌드 성공과 구분해 명시한다.
-
-## 신규 Crown config 규칙
-
-- 시간·서리·신성·저주받은 왕관의 밸런스 수치는 `CrownServerConfig`의 SERVER config를 사용한다.
-- 설정값을 바꾸면 실제 능력, 속성 modifier, 아이템 툴팁, 로어북 숫자가 함께 일치하는지 확인한다.
-- 저주받은 왕관의 귀속, 합법적 해제 예외, 사망 유지, 저주 변환의 curse 제거는 밸런스 설정으로 끌 수 없게 유지한다.
-- 저주 변환 원본은 명시적 Tier I~III allowlist로 관리하고, 미래 Crown을 자동 포함하지 않는다.
-
-## 진단·호환·배포 규칙
-
-- `/crown diagnostics`와 접속 후 자동 감사에서 핵심 Mixin 누락이 보고되면 배포하지 않는다.
-- JEI는 15.20+, EMI는 1.1.x, REI는 12.x 범위이며 실제 시험 버전과 결과를 `PROJECT_STATE_KO.md`에 기록한다.
-- compile-only 레시피 뷰어 API stub을 배포 JAR에 포함하지 않는다.
-- 1.5.3의 기존 파일명은 유지한다. 다음 버전에서 archive base name의 버전 중복을 제거하고 manifest, `mods.toml`, 호환 목록을 함께 재검증한다.
-- 개인 사용과 수정하지 않은 JAR의 무료·비수익 모드팩 포함은 허가한다. 수익화 모드팩 및 그 밖의 상업 이용은 별도 허가 대상으로 문서화하며 저작자의 명시적 결정 없이 범위를 넓히지 않는다.
+- Forge 1.20.1: `./gradlew.bat :platforms:forge-1.20.1:clean :platforms:forge-1.20.1:build`
+- Parse resource JSON, compare Korean and English translation keys, and inspect the built JAR before publishing.
+- Distinguish clean-build/static verification from real Minecraft integration testing.

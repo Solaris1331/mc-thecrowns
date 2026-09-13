@@ -3,6 +3,7 @@
 .runtime/
 build/
 run/
+**/build-log.txt
 out/
 *.iml
 .idea/

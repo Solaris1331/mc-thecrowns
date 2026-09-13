@@ -1,0 +1,28 @@
+{
+  "parent": "thecrowns:builder_iii",
+  "display": {
+    "icon": {
+      "item": "thecrowns:crown_of_light"
+    },
+    "title": {
+      "translate": "advancement.thecrowns.tier_iii_crowns.title"
+    },
+    "description": {
+      "translate": "advancement.thecrowns.tier_iii_crowns.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "complete": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "complete"
+    ]
+  ]
+}

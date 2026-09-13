@@ -1,0 +1,16 @@
+{
+  "type": "thecrowns:crown_builder",
+  "category": "equipment",
+  "required_tier": 2,
+  "pattern": ["ECE", "GSG", "ADL"],
+  "key": {
+    "E": {"item": "minecraft:end_crystal"},
+    "C": {"item": "minecraft:dragon_head"},
+    "G": {"item": "minecraft:ghast_tear"},
+    "S": {"item": "minecraft:nether_star"},
+    "A": {"item": "minecraft:amethyst_block"},
+    "D": {"item": "minecraft:diamond_block"},
+    "L": {"item": "minecraft:gold_block"}
+  },
+  "result": {"item": "thecrowns:divine_crown"}
+}

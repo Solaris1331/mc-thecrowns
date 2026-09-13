@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "thecrowns:block/crown_builder_t1"
+  }
+}

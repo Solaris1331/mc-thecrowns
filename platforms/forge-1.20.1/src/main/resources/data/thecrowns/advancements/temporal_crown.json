@@ -1,0 +1,14 @@
+{
+  "parent": "thecrowns:builder_iii",
+  "display": {
+    "icon": { "item": "thecrowns:temporal_crown" },
+    "title": { "translate": "advancement.thecrowns.temporal_crown.title" },
+    "description": { "translate": "advancement.thecrowns.temporal_crown.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "crafted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["crafted"]]
+}

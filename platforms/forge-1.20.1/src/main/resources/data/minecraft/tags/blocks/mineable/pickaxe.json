@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "thecrowns:compressed_emerald_block",
+    "thecrowns:crown_builder_t1",
+    "thecrowns:crown_builder_t2",
+    "thecrowns:crown_builder_t3",
+    "thecrowns:crown_builder_t4"
+  ]
+}

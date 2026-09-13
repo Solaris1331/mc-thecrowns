@@ -1,28 +1,27 @@
-# The Crowns 1.5.3
+# The Crowns
 
-The Crowns is a Forge 1.20.1 equipment and progression mod with fifteen Crown variants, four Crown Builder tiers, a bilingual in-game lorebook, and server-authoritative end-game abilities.
+The Crowns is a Minecraft equipment and progression mod under active 1.0.0 beta development.
 
-## Requirements
+## Supported targets
 
-- Minecraft 1.20.1
-- Forge 47.4.x
-- Java 17
-- Curios 5.14.1+
+- Forge 1.20.1
+- NeoForge 1.21
+- NeoForge 1.21.1
 
-JEI 15.20+, EMI 1.1.x, and REI 12.x are optional client integrations. Crown equipment works in the vanilla head slot and Curios `head`/`hat` slots.
+Each target is an independent platform project under `platforms/`. Shared behavior must remain functionally aligned, while loader- and version-specific code stays local to its platform.
 
-## 1.5.3 highlights
+## Current status
 
-- Temporal, Frost, Divine, and Cursed Crowns and their Crown Builder progression
-- World-specific SERVER config, including 38 balance values for those four Crowns
-- Dynamic tooltips and lorebook values driven by the server config
-- Explicit Tier I-III-only cursed transformation boundary
-- One-shot death retention for Temporal and Cursed Crowns
-- Mixin health audit through `/crown diagnostics`
-- Custom Crown Builder recipe categories for JEI, EMI, and REI
+`platforms/forge-1.20.1` contains the `thecrowns` 1.0.0-beta.1 baseline. NeoForge targets will be added after this Forge baseline is verified.
 
-Pack integration details are in [PACK_DEVELOPER.md](PACK_DEVELOPER.md). Korean documentation is in [README_KO.md](README_KO.md) and [MODPACK_DEVELOPER_GUIDE_1.5.3_KO.md](MODPACK_DEVELOPER_GUIDE_1.5.3_KO.md).
+The former `glitchedcrown` Forge 1.20.1 1.5.3 source and beta history are preserved in `docs/legacy/forge-1.20.1/` and in Git tag `forge-1.20.1-1.5.3`.
 
-## Usage
+## Build
 
-Personal use and inclusion of an unmodified JAR in free, non-monetized modpacks are permitted. The project metadata remains `All Rights Reserved`; monetized packs, direct redistribution, modified binaries, forks, and commercial use require separate permission unless the author publishes a broader license.
+Run the Forge 1.20.1 baseline from the repository root:
+
+```powershell
+.\gradlew.bat :platforms:forge-1.20.1:clean :platforms:forge-1.20.1:build
+```
+
+Release JARs begin with The Crowns 1.0.0; legacy 1.5.3 binaries are intentionally not published in this repository.
