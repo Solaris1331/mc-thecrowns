@@ -1,0 +1,24 @@
+The Crowns 1.4.9 - Forge 1.20.1 변경 명세
+============================================================
+
+1. JEI Crown Builder 레시피 등록 경로 재작성
+- JEI 공식 IModPlugin#registerRecipes(IRecipeRegistration) 단계에서 Crown Builder recipes를 직접 등록.
+- Minecraft.level 존재 여부에 의존하지 않음.
+- 우선 Minecraft.getConnection().getRecipeManager()의 동기화된 client recipe를 사용.
+- client RecipeManager를 얻지 못하거나 Crown Builder recipe가 0개이면 JAR 내부 10개 built-in JSON을 직접 파싱하는 fallback 사용.
+- 결과적으로 JEI 시작 순서/월드 level 할당 시점과 무관하게 built-in Crown recipe 10개가 항상 등록될 경로를 확보.
+
+2. 서버 config 조기 접근 제거
+- JEI recipe 수집/transfer 단계에서 CrownBuilderRecipe#isRecipeEnabled()를 호출하지 않음.
+- Forge SERVER config가 아직 client에 로드되지 않은 시점에 ConfigValue#get()이 예외를 내며 JEI plugin 등록 전체를 중단시킬 가능성을 제거.
+- 실제 제작 허용 여부는 Crown Builder 서버측 canPlayerCraft/matches 검증이 계속 최종 권한을 가짐.
+
+3. JEI 진단 로그 추가
+- category 등록 시 로그 출력.
+- recipe 등록 시 실제 등록 개수와 source(client RecipeManager / built-in JSON fallback)를 로그 출력.
+- built-in 기준 0개가 나오면 ERROR 로그 출력.
+
+4. 기존 기능 유지
+- JEI Crown Builder category / Builder I-IV catalyst / required tier 표시 / + transfer 유지.
+- EMI / REI 네이티브 지원 유지.
+- 네트워크 프로토콜 9 유지.

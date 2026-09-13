@@ -1,0 +1,16 @@
+Glitched Crown 1.0.8 - Dragonfyre Forge 1.20.1
+
+1. JDK 17 설치 확인
+2. BUILD_MOD.bat 실행
+3. 빌드 성공 후 build\libs 폴더에서 glitchedcrown 및 1.0.8이 포함된 JAR 확인
+4. 기존 Glitched Crown JAR를 제거하고 새 JAR를 Dragonfyre 인스턴스의 mods 폴더에 넣기
+5. 멀티플레이 서버에서는 클라이언트와 서버 양쪽에 같은 JAR 설치
+6. 획득 명령: /give @s glitchedcrown:glitched_crown
+
+조작키
+G 삭제 광선
+H 운명적 파멸 토글
+J 망각의 오라 토글
+K 절멸
+
+제작법/FTB Quests는 포함하지 않습니다. 왕관 획득 도전과제 [금단의 영역]은 1.0.7에서 복원되었습니다.

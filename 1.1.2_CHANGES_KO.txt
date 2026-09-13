@@ -1,0 +1,39 @@
+Glitched Crown 1.1.2 변경사항
+
+1. /gt 관리자 명령 추가 (권한 레벨 2)
+- /gt <player> canrevive <true|false>
+  true: Glitched Crown 300초 부활 능력 사용 가능 (기본값)
+  false: 쿨다운 상태와 무관하게 부활 능력 미발동
+
+- /gt <player> shieldenable <true|false>
+  true: 보호막 피해감소 및 자동 재충전 활성 (기본값)
+  false: 보호막 피해감소 및 자동 재충전 비활성
+
+- /gt <player> shieldstack set <0..30>
+- /gt <player> shieldstack add <0..30>
+- /gt <player> shieldstack max
+- /gt <player> shieldstack rem
+  결과는 항상 0..30 범위로 제한됨.
+  shieldstack 명령은 대상이 현재 Glitched Crown을 착용하고 있어야 함.
+
+2. 두 Crown 인챈트 호환성 변경
+- Glitched Crown / Unleashed Crown 모두 해당 아이템을 투구로 인정하는 모든 바닐라/모드 인챈트를 적용 가능.
+
+3. Glitched Crown 삭제 광선 변경
+- 일반 hurt/damage-event 방식이 아니라 setHealth()로 체력을 직접 감소.
+- 일반/플레이어/보스 최대체력 65%/45%/25% 감소 수치와 150초 쿨다운은 유지.
+- 체력 0 도달 시 vanilla death 처리를 마무리하기 위해 die()만 호출하며, 피해량 자체는 setHealth로 적용.
+
+4. 동적 아이템 툴팁
+- 현재 보호막 스택 X/30 표기.
+- 보호막 활성/비활성 상태 표기.
+- 부활 쿨다운 사용 가능/남은 초 표기.
+- canrevive false인 경우 부활 비활성 상태 표기.
+
+5. 부활 시 보호막 재충전
+- Glitched Crown의 300초 부활이 실제 발동하면 현재 보호막에 +15스택 즉시 추가.
+- 최대 30스택을 넘지 않음.
+
+6. 설정 지속
+- canrevive / shieldenable은 플레이어별 persistent data로 저장.
+- 실제 사망 후 플레이어 clone/respawn 시에도 설정을 복사해 유지.

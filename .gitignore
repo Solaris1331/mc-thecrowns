@@ -1,0 +1,11 @@
+.gradle/
+.gradle-bootstrap/
+.runtime/
+build/
+run/
+out/
+*.iml
+.idea/
+.classpath
+.project
+.settings/

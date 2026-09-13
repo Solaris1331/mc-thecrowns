@@ -1,0 +1,14 @@
+{
+  "parent": "glitchedcrown:builder_i",
+  "display": {
+    "icon": { "item": "glitchedcrown:frost_crown" },
+    "title": { "translate": "advancement.glitchedcrown.frost_crown.title" },
+    "description": { "translate": "advancement.glitchedcrown.frost_crown.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "crafted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["crafted"]]
+}

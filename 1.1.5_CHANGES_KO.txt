@@ -1,0 +1,31 @@
+Glitched Crown 1.1.5 Dragonfyre - 변경사항
+============================================
+
+[공통]
+- Glitched/Unleashed 삭제 광선의 시작점을 눈 위치 자체로 이동.
+  기존 1.5블록 전방 오프셋을 제거하여 시전자와 밀착한 대상도 광선 판정 가능.
+
+[Glitched Crown]
+- 부활 발동 연출 추가:
+  * 화면 앞에 Glitched Crown 아이템 활성화 오버레이 표시
+  * 불사의 토템과 같은 TOTEM_USE 사운드
+  * TOTEM_OF_UNDYING 파티클
+- 부활 처리 우선순위를 LivingDeathEvent LOWEST로 이동하고 die() HEAD 선행 부활 Mixin 제거.
+  다른 토템/모드 부활이 먼저 사망을 취소하면 Crown 부활은 발동하지 않도록 개선.
+- 야간 투시 상시 유지 추가.
+- 80% 피해감소 보호막이 실제로 피해를 감소시키면 SHIELD_BLOCK 계열의 높은 피치 '팅' 효과음 재생.
+- canremovelay 플레이어별 스위치 추가(기본 true).
+- 삭제 광선 쿨다운을 플레이어 런타임 데이터로 관리하고 기존 아이템 NBT 쿨다운은 자동 마이그레이션.
+
+[신규 /gt 명령]
+- /gt <player> rivivetimeset <0..300>
+  남은 Glitched Crown 부활 쿨다운을 초 단위로 설정.
+- /gt <player> removelaycdset <0..150>
+  남은 Glitched Crown 삭제 광선 쿨다운을 초 단위로 설정.
+- /gt <player> canremovelay <true|false>
+  Glitched Crown 삭제 광선 사용 가능 여부. 기본 true.
+
+[Unleashed Crown]
+- 삭제 광선 적중 대상은 lethal callback 전에 silent=true 처리.
+- 절멸(K)에 닿은 Living/비Living 엔티티도 제거 전에 silent=true 처리.
+- 셜커 탄환 삭제도 silent=true 이후 kill 처리.

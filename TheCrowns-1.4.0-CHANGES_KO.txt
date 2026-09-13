@@ -1,0 +1,57 @@
+The Crowns 1.4.0 - Forge 1.20.1 변경 명세
+============================================================
+
+1. 한국어 아이템명
+- Burning Crown -> 불타는 왕관
+- Ironforged Crown -> 강철화 왕관
+- Bloody Crown -> 핏빛 왕관
+- Darkened Crown -> 암흑의 왕관
+- Warrior Crown -> 전사의 왕관
+- Crown of Light -> 빛의 왕관
+- Dimensional Crown -> 차원의 왕관
+- Angelic Crown -> 천사의 왕관
+- Glitched Crown -> 글리치 왕관
+- Unleashed Crown -> 해방된 왕관
+- Unleashed Unleashed Crown -> 해방된 해방된 왕관
+
+2. 툴팁
+- 모든 Crown은 기본 Hover에서 "슬롯 : 머리"와 Shift 안내만 표시.
+- 실제 능력 설명은 Shift 상태에서만 표시.
+- 한국어 문구를 전체 통일하고 같은 내용의 자연스러운 영어 툴팁 추가.
+- 모든 액티브 단축키는 현재 KeyMapping을 실시간 표시.
+- Ironforged/Warrior/Angelic/Bloody/Glitched의 쿨다운은 현재 남은 시간을 실시간 표시.
+- Bloody Crown은 피의 축복 현재 스택 X/50을 표시.
+- Angelic Crown은 구사일생 준비/남은 시간을 표시.
+
+3. 신규 Crown 구현
+- Warrior Crown 추가: +20 HP/+20 공격력, 방어/방어강도 -20%, 활/석궁 봉쇄.
+  K 결투: 15초 동안 직접 근접 피해만 허용, 공격속도 +25%, 시선 대상에
+  구속 II/나약함 II/실명 II 표식. 표식 대상 처치 시 남은 쿨다운 -30초.
+  기본 쿨다운 120초.
+- Angelic Crown 추가: +10 HP/+35% 이동속도/+35% 비행속도,
+  낙하/질식/벽 끼임/cramming 면역. 치명상 1회 무효 + 4초 무적, 구사일생 CD 600초.
+  K 창공날기: 30초 자유비행, CD 120초. 본 Crown이 부여한 비행권만 회수.
+
+4. 기존 Crown 보정
+- Bloody Crown의 영구 체력 성장을 직접 근접 처치 + 유효 적 대상 + 30초 proc 조건으로 정정.
+  proc 시 최대체력 20% 회복, 최대 50스택 이후에도 회복 proc 유지.
+  피해 이벤트마다 proc 쿨다운 -1초.
+- Standard Crown은 Glitched Crown의 Unbreakable 성질을 상속하지 않도록 분리하고 내구도 4096 적용.
+- Dimensional Crown 공허 구조를 차원 최대 건축 높이를 고려하도록 보강하고 실제 착지까지 낙하 피해 면역.
+- Ironforged Crown은 소유 골렘 UUID/120초 쿨다운/능력치 snapshot/거리 추적을 강화.
+
+5. Unleashed / U²
+- 종말의 힘 H: OFF -> 50% -> 100% -> OFF.
+- H50: 최종 피해 x1024, 공격속도 +5, 공격력 +50, Armor Pierce +100,
+  Protection Shred 100%, 적중 시 5초 절대 구속.
+- H100: 최종 피해 x32767, 공격속도 +10, 공격력 +100, 나머지 관통/구속 동일.
+- 기존 Crit Chance / Crit Damage 보너스 제거.
+- 일반 Unleashed 삭제 광선은 남은 본체 체력을 즉시 0으로 붕괴.
+- U² 삭제 광선은 사용자 요청대로 기존 1600% maxHP raw hit + 잔여 체력 붕괴 순서를 유지.
+- U² H 값은 고정, 일반 Unleashed H 값은 서버 Config 사용.
+
+6. 네트워크/리소스
+- 네트워크 프로토콜 8.
+- Warrior Duel / Angelic Flight C2S payload 추가.
+- Warrior/Angelic 아이템, 모델, 텍스처, Curios head/hat 태그 추가.
+- Warrior/Angelic 전용 3x3 커스텀 제작법 추가.

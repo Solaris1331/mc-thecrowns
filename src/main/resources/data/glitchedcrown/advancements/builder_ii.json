@@ -1,0 +1,32 @@
+{
+  "parent": "glitchedcrown:tier_i_crowns",
+  "display": {
+    "icon": {
+      "item": "glitchedcrown:crown_builder_t2"
+    },
+    "title": {
+      "translate": "advancement.glitchedcrown.builder_ii.title"
+    },
+    "description": {
+      "translate": "advancement.glitchedcrown.builder_ii.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_builder": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "glitchedcrown:crown_builder_t2"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

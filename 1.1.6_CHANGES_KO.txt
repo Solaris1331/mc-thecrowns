@@ -1,0 +1,16 @@
+Glitched Crown 1.1.6 Dragonfyre - 변경사항
+
+- Glitched Crown 내구도 32767
+- 두 Crown 분해광선 사거리 50, 판정 폭 2로 확대
+- 눈앞 2블록 파티클은 숨기되 피해 판정은 눈 위치부터 시작
+- 분해광선 시각 지속 창 2 -> 3틱(+50%)
+- VP 1.7.1 Cruel 보스의 VPShield/VPOverShield 및 setHealth 훅을 우회하는 raw health 처리
+- Glitched G: 65%/45%/25% max HP를 본체 체력에 직접 차감
+- Unleashed G: max HP 1600% 고정 체력 손실 후 남은 체력 0 + 강제 소거
+- Unleashed K: raw health 0 + 강제 소거
+- /gt <player> useremoveraycd true/false 추가 (기본 true)
+- Glitched 툴팁을 Shift 접기/펼치기 구조로 전면 개편
+- Unleashed 툴팁도 Shift 구조로 개편
+- 운명적 파멸: 피해를 준 대상 5초 절대 이동 봉쇄
+- 망각의 오라: Warden anger/target/관련 brain memory 지속 제거
+- Glitched 부활 이벤트 우선순위를 LOWEST로 정정하여 다른 부활 수단 중복 발동 방지 강화

@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["RR", "RR"],
+  "key": {"R": {"item": "glitchedcrown:rotten_flesh_block"}},
+  "result": {"item": "glitchedcrown:big_rotten_flesh_block"}
+}

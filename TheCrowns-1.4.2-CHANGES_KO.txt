@@ -1,0 +1,126 @@
+The Crowns 1.4.2 - Forge 1.20.1 변경 사항
+========================================
+
+기준
+- Minecraft 1.20.1
+- Forge 47.4.0+
+- Java 17
+- internal modid: glitchedcrown
+
+1. Crown Builder 완성도 보강
+---------------------------
+- Crown Builder I~IV의 3x3 영구 내부 인벤토리 유지.
+- BlockEntity가 vanilla Container를 직접 구현하지 않도록 변경.
+- 외부 ITEM_HANDLER capability도 노출하지 않음.
+- 따라서 vanilla Hopper 및 Forge 파이프/AE2/RS/Create 계열의 일반 ItemHandler 접근 경로를 차단.
+- Builder 내부에 어떤 Tier의 Builder도 넣을 수 없음.
+- 블록 파괴 -> ItemStack -> 재설치 시 BlockEntityTag로 9칸 내용 보존.
+- Builder 업그레이드 시 기존 Builder의 BlockEntityTag와 custom name 보존.
+- 결과 슬롯은 virtual result이며 플레이어가 결과를 가져갈 때만 입력 소비/remainder 처리.
+- shift-click 결과 제작에서도 Crown 제작 발전과제가 정상 지급되도록 보강.
+
+2. Crown Builder 레시피/Config
+------------------------------
+- glitchedcrown:crown_builder custom recipe type/serializer 정식 등록.
+- required_tier 1~4를 서버 제작 판정의 단일 소스로 사용.
+- 상위 Builder는 하위 Tier recipe를 사용 가능.
+- Glitched enableRecipe / Unleashed enableRecipe 설정을 Builder 제작에서도 다시 적용.
+- Unleashed requireGlitchedCrownAdvancementForCrafting 설정도 다시 적용.
+- 데이터팩의 require_advancement는 유지하되 위 Unleashed 설정이 false이면 해당 요구를 해제.
+- Glitched Crown의 Dragon Egg는 항상 crafting remainder로 반환.
+- 구형 Glitched crafting serializer에서도 Dragon Egg 상시 반환으로 통일.
+
+3. Builder Tier 진행
+--------------------
+- Tier I: Burning / Ironforged
+- Tier II: Bloody / Darkened / Warrior
+- Tier III: Crown of Light / Dimensional / Angelic
+- Tier IV: Glitched / Unleashed
+- U²: recipe 없음.
+
+4. Builder 제작법 수정
+----------------------
+Tier I:
+Iron Block / Anvil / Iron Block
+Amethyst Block / Diamond Block / Amethyst Block
+Iron Block / Crafting Table / Iron Block
+
+Tier II:
+Gold Block / Enchanting Table / Gold Block
+Netherite Ingot / Builder I / Netherite Ingot
+Gold Block / Wither Skeleton Skull / Gold Block
+
+Tier III:
+Diamond Block / Dragon Head / Diamond Block
+End Rod / Builder II / End Rod
+Diamond Block / Shulker Shell / Diamond Block
+
+Tier IV (설계 원안으로 수정):
+Netherite Block / Compressed Emerald Block / Netherite Block
+Compressed Emerald Block / Builder III / Compressed Emerald Block
+Netherite Block / Compressed Emerald Block / Netherite Block
+
+5. JEI 15.20+ 선택적 연동
+------------------------
+- Crown Builder 전용 recipe category 추가.
+- 레시피에 "필요한 Builder 티어: I/II/III/IV" 표시.
+- Builder I~IV를 recipe catalyst로 등록.
+- JEI + recipe transfer 지원.
+- 현재 열린 Builder Tier가 부족하면 transfer 거부 및 요구 Tier 표시.
+- 서버 설정으로 비활성화된 Glitched/Unleashed recipe는 transfer 거부.
+- JEI는 optional dependency이며 JEI API stub은 컴파일용 별도 source set으로만 사용되고 최종 JAR에 포함되지 않음.
+
+6. Builder 발전과제 트리
+------------------------
+- The Crowns root
+- Builder I
+- Tier I Crowns 완료 노드
+- Builder II
+- Tier II Crowns 완료 노드
+- Builder III
+- Tier III Crowns 완료 노드
+- Builder IV
+- Glitched Crown
+- hidden Forbidden Domain / Unleashed
+- 개별 Crown 제작 발전과제는 minecraft:impossible criterion을 사용하며 Crown Builder 결과를 플레이어가 직접 가져갈 때 서버 코드가 지급.
+- /give 및 단순 아이템 습득으로 개별 Crown 제작 발전과제가 자동 지급되지 않음.
+
+7. Builder 물리 보호
+--------------------
+- 모든 Builder 설치 블록의 폭발저항을 매우 높게 설정.
+- T3/T4 dropped Builder ItemEntity:
+  * 자연 despawn 방지
+  * 일반 damage/hurt 제거 방지
+  * 화염 상태 제거
+- T3는 공허 소멸 허용.
+- T4는 dimension minBuildHeight 근처에서 위로 구조되어 공허 소멸 방지.
+
+8. Creative Tab
+---------------
+- Compressed Emerald Block을 Ingredients/Building Blocks에 추가.
+- Builder I~IV를 Functional Blocks/Tools & Utilities에 추가.
+
+9. Standard Crown 수리
+----------------------
+- Tier I~III 일반 Crown은 Nether Star로 모루 수리 가능.
+- Nether Star 1개당 최대 내구도의 25% 수리.
+- 모루 레벨 비용 10.
+
+10. Crown 외형
+-------------
+- 빛의 왕관 item icon: 빛나는 cyan/blue 계열 유지.
+- Tier I~III Crown에 각각 별도 equipped armor texture 추가.
+- 빛의 왕관 equipped texture도 luminous cyan/blue 계열로 분리.
+
+11. 동일 Crown 중복 착용
+-----------------------
+- 같은 종류의 Crown을 vanilla Head + Curios에 동시에 중복 장착하지 못하도록 보강.
+- Standard / Glitched / Unleashed / U² 공통 적용.
+- 서로 다른 종류의 Crown 동시 착용은 기존처럼 허용.
+
+12. 빌드 검증
+-------------
+- 사용자 제공 Forge 1.20.1 오프라인 빌드 환경 사용.
+- Temurin JDK 17.0.20 / Gradle 8.8 / Forge 47.4.0 cache.
+- clean -> compileJava -> addMixinsToJar -> processResources -> jar -> reobfJar -> build 성공.
+- compile-only JEI stub class(mezz/jei/*)가 최종 JAR에 포함되지 않음을 확인 예정/검증 보고서 참조.

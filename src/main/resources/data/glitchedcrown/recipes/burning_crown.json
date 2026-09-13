@@ -1,0 +1,30 @@
+{
+  "type": "glitchedcrown:crown_builder",
+  "category": "equipment",
+  "required_tier": 1,
+  "pattern": [
+    "FRF",
+    "GNG",
+    "FLF"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:fire_charge"
+    },
+    "R": {
+      "item": "minecraft:blaze_rod"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "L": {
+      "item": "minecraft:lava_bucket"
+    }
+  },
+  "result": {
+    "item": "glitchedcrown:burning_crown"
+  }
+}

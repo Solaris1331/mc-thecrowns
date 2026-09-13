@@ -1,0 +1,28 @@
+{
+  "parent": "glitchedcrown:builder_ii",
+  "display": {
+    "icon": {
+      "item": "glitchedcrown:warrior_crown"
+    },
+    "title": {
+      "translate": "advancement.glitchedcrown.warrior_crown.title"
+    },
+    "description": {
+      "translate": "advancement.glitchedcrown.warrior_crown.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "crafted": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ]
+}

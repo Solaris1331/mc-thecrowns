@@ -1,0 +1,30 @@
+{
+  "type": "glitchedcrown:crown_builder",
+  "category": "equipment",
+  "required_tier": 2,
+  "pattern": [
+    "BZB",
+    "RNR",
+    "BEB"
+  ],
+  "key": {
+    "B": {
+      "item": "glitchedcrown:big_rotten_flesh_block"
+    },
+    "Z": {
+      "item": "minecraft:blaze_rod"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "N": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "E": {
+      "item": "minecraft:end_crystal"
+    }
+  },
+  "result": {
+    "item": "glitchedcrown:bloody_crown"
+  }
+}

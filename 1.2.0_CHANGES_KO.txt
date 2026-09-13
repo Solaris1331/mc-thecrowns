@@ -1,0 +1,47 @@
+Glitched Crown 1.2.0 - Pack Developer Update
+============================================================
+
+[신규 아이템]
+- glitchedcrown:unleashed_unleashed_crown
+- Unleashed Crown의 고정 풀파워 크리에이티브/관리자 전용 복제판
+- 조합법 없음 / 발전과제 없음 / 진행 조건 없음
+- glitchedcrown-server.toml의 모든 옵션과 수치를 무시
+- 1.1.12 Unleashed 기본 풀파워 수치를 고정 유지
+- 일반 Unleashed 외형 + 항상 인챈트 광택
+
+[Pack Developer Config]
+- glitchedcrown-server.toml 추가
+- Glitched/Unleashed 주요 능력 ON/OFF
+- 보호막, 부활, 광선, 처형, 무적해제, 절멸, 종말의 힘 등의 주요 수치 설정
+- 공통 스탯 및 약탈 레벨 설정
+- Glitched 발전과제 점수/목록 설정
+- FTB Teams, scoreboard team, 길들임, 소유 엔티티 보호 설정
+- Unleashed 일반 공격 우회 모드: NORMAL / BYPASS_TAGS / RAW_HEALTH
+
+[Datapack/API]
+- #glitchedcrown:protected_from_crown_offense
+- #glitchedcrown:protected_from_removal_ray
+- #glitchedcrown:protected_from_annihilation
+- #glitchedcrown:protected_from_execution
+- Cancelable CrownAbilityTargetEvent
+- Cancelable CrownReviveEvent
+
+[관리/진단]
+- /crown inspect <player>
+- 기존 /gt 명령 유지
+- debugLogging 옵션으로 외부 강제이동 호출자 기록 가능
+
+[호환 코드 정리]
+- FTB Teams: compat/FTBTeamsCompat
+- Vestiges: compat/VestigesCompat
+- Ice and Fire: compat/IceAndFireCompat
+- 강제이동 계열: compat/ForcedMovementCompat
+
+[툴팁]
+- 일반 Crown에 pack-configurable 안내 추가
+- 공통 기본 스탯과 Glitched 광선 주요 수치가 config를 반영
+- Unleashed Unleashed는 config-immune/creative-only 안내
+
+[네트워크]
+- 절멸 반경 동기화 때문에 프로토콜 6 사용
+- G/H/J/K는 여전히 서버 권한 판정

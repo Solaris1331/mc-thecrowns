@@ -1,0 +1,14 @@
+{
+  "parent": "glitchedcrown:builder_ii",
+  "display": {
+    "icon": { "item": "glitchedcrown:divine_crown" },
+    "title": { "translate": "advancement.glitchedcrown.divine_crown.title" },
+    "description": { "translate": "advancement.glitchedcrown.divine_crown.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "crafted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["crafted"]]
+}

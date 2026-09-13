@@ -1,0 +1,14 @@
+{
+  "parent": "glitchedcrown:cursed_crown_acquired",
+  "display": {
+    "icon": { "item": "glitchedcrown:cursed_crown" },
+    "title": { "translate": "advancement.glitchedcrown.cursed_crown_worn.title" },
+    "description": { "translate": "advancement.glitchedcrown.cursed_crown_worn.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": { "worn": { "trigger": "minecraft:impossible" } },
+  "requirements": [["worn"]]
+}

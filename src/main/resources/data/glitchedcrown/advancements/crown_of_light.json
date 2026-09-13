@@ -1,0 +1,28 @@
+{
+  "parent": "glitchedcrown:builder_iii",
+  "display": {
+    "icon": {
+      "item": "glitchedcrown:crown_of_light"
+    },
+    "title": {
+      "translate": "advancement.glitchedcrown.crown_of_light.title"
+    },
+    "description": {
+      "translate": "advancement.glitchedcrown.crown_of_light.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "crafted": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ]
+}

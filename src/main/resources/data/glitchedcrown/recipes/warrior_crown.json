@@ -1,0 +1,42 @@
+{
+  "type": "glitchedcrown:crown_builder",
+  "category": "equipment",
+  "required_tier": 2,
+  "pattern": [
+    "PBN",
+    "IAI",
+    "XVT"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:potion"
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "N": {
+      "item": "minecraft:netherite_sword"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "A": {
+      "item": "minecraft:ancient_debris"
+    },
+    "X": {
+      "item": "minecraft:netherite_axe"
+    },
+    "V": {
+      "item": "minecraft:anvil"
+    },
+    "T": {
+      "item": "minecraft:trident"
+    }
+  },
+  "potion_slots": {
+    "0": "minecraft:strong_strength"
+  },
+  "result": {
+    "item": "glitchedcrown:warrior_crown"
+  }
+}

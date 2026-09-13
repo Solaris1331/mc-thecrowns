@@ -1,0 +1,13 @@
+{
+  "type": "glitchedcrown:crown_builder",
+  "category": "equipment",
+  "required_tier": 3,
+  "pattern": ["ERE", "SNS", "ERE"],
+  "key": {
+    "E": {"item": "minecraft:echo_shard"},
+    "R": {"item": "minecraft:redstone_block"},
+    "S": {"item": "glitchedcrown:spacetime_stabilizer"},
+    "N": {"item": "minecraft:netherite_ingot"}
+  },
+  "result": {"item": "glitchedcrown:temporal_crown"}
+}

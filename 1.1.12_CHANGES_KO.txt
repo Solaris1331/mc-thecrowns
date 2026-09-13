@@ -1,0 +1,56 @@
+Glitched Crown + Unleashed Crown 1.1.12 변경사항
+================================================
+
+공통
+- 두 Crown 모두 느린 낙하(Slow Falling) 효과에 면역.
+- Crown 착용자의 긍정 효과를 외부 로직이 명시적으로 제거하려 할 때 Forge 효과 제거 이벤트에서 차단.
+  * 자연적인 지속시간 만료는 그대로 허용.
+  * 착용자 본인의 우유 사용 및 /effect 명령에 의한 제거는 허용.
+- 강제이동 방어 강화: LivingEntity knockback, Entity push, velocity add/set, move, setPos/setPosRaw,
+  teleport 경로를 보강하고 TravelOptics / Cataclysm / L2 Hostility 등 외부 강제이동 호출을 차단.
+- 폭발 넉백은 기존 Explosion redirect + LivingKnockBackEvent + 신규 LivingEntity#knockback 차단의 다층 방어로 보강.
+
+Glitched Crown
+- 반경 30블록의 피격무적 제거 영역에서 현재 HP가 최대 HP의 10% 미만인 보호대상 외 LivingEntity를
+  FORCED_DEATH로 즉사시킴.
+- 같은 FTB Teams 팀원 및 길들인/소유 엔티티 보호 규칙은 그대로 적용.
+- FORCED_DEATH는 Forge LivingDeathEvent 취소를 우회하도록 보강.
+
+Unleashed Crown - 종말의 힘(H)
+- 3단 토글로 변경: OFF -> 50% -> 100% -> OFF.
+- 50%: 기존 효과 유지
+  * Crit Chance +500%
+  * Crit Damage +500%
+  * Armor Pierce +100
+  * Protection Shred +100%
+  * 피해 적중 시 5초 절대 구속
+- 100%:
+  * 50% 단계 효과 유지
+  * Attack Speed +10
+  * Attack Damage +100
+  * Crit Chance +1000%
+  * Crit Damage +1000%
+  * 피해 적중 시 5초 절대 구속
+- 메시지:
+  * 종말의 힘이 50% 활성화되었습니다.
+  * 종말의 힘이 완전히 활성화되었습니다.
+  * 종말의 힘이 비활성화되었습니다.
+
+Unleashed Crown - 모든 가해 피해
+- Forge LivingAttack/LivingHurt의 공격자측 보정은 먼저 통과시켜 Apotheosis/Apothic Attributes 치명타 같은
+  공격 보너스가 계산된 뒤, LivingEntity#actuallyHurt 내부에서 대상의 실제 체력 데이터에 직접 적용.
+- 그 뒤의 방패/방어력/저항/인챈트/흡수/피격무적 및 Forge LivingDamage 기반 방어를 건너뜀.
+- VP Shield/OverShield, Cruel DPS 흡수처럼 LivingDamage에서 작동하는 Vestige 방어 계열은 소모시키지 않고
+  본체 HP에 바로 피해가 들어감. 치명타일 때는 남아 있는 VP Shield 사망보호 값만 정리한 뒤 정상 사망 경로로 진행.
+- 같은 팀원 및 길들인/소유 엔티티에는 이 Crown 전용 절대피해 경로를 적용하지 않음.
+
+Unleashed Crown - 비행 상태 잠금
+- 실제 플레이어의 비행 토글 패킷(스페이스 두 번)은 정상 허용.
+- 땅에 착륙해 비행 상태가 종료되는 것도 허용.
+- 그 외 모드/서버 로직이 mayfly/flying 값을 바꾼 뒤 동기화하려 하면 동기화 직전에 기존 허용 상태로 복원.
+- 직접 필드 변경 후 동기화하지 않는 경우도 서버 틱에서 복원.
+
+T.O Magic / 강제이동
+- TravelOptics 1.20.1 호출 스택을 강제이동으로 인식.
+- Nightwarden 밀침, Supernova 끌어당김과 동일한 이동 API를 사용하는 Black Hole, Telekinesis,
+  Roots, Arcane Shackle 계열을 포함하도록 velocity/move/setPos/teleport 경로를 폭넓게 차단.

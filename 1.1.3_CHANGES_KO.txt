@@ -1,0 +1,6 @@
+Glitched Crown 1.1.3 hotfix
+
+- 1.1.2 client bootstrap crash fixed.
+- CrownIntegrity.isCrownStack() no longer calls UNLEASHED_CROWN.get() before the RegistryObject is present.
+- ItemStack mutation mixins now safely return false during early Forge bootstrap.
+- All 1.1.2 gameplay features remain unchanged.

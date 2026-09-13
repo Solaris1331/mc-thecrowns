@@ -1,0 +1,18 @@
+Glitched Crown 1.1.10 변경사항
+
+1. Unleashed Crown 토글 메시지 이름 정리
+- 운명적 파멸 -> 종말의 힘
+- 망각의 오라 -> 망각의 장막
+- 조작키 설정 화면의 능력 이름도 현재 명칭으로 정리.
+
+2. Unleashed Crown 레시피 숨김 제거
+- ClientboundUpdateRecipesPacket 필터 Mixin 제거.
+- Glitched Crown 제작 발전과제 달성 전에도 레시피 정의는 클라이언트/JEI/EMI에 노출 가능.
+- 실제 서버 제작은 기존 커스텀 레시피 조건으로 계속 차단.
+- glitchedcrown:glitched_crown 발전과제를 달성한 플레이어만 제작 결과를 얻을 수 있음.
+
+3. Glitched Crown 발전과제 조건 미달 착용 경고
+- 조건 미달 상태에서 Glitched Crown을 착용하면 1회 표시:
+  도전 과제 조건이 만족되지 않았습니다 (n/4)
+- n은 기본 요구 발전과제 + 대체 도전과제의 유효 달성 점수이며 최대 4.
+- Crown을 벗었다 다시 착용하면 다시 표시.

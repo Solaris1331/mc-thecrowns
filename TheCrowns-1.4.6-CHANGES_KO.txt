@@ -1,0 +1,23 @@
+The Crowns 1.4.6 변경 사항
+==========================
+
+1. The Crowns 전용 Creative Tab 신설
+- Creative Inventory에 "The Crowns" 전용 탭을 추가했습니다.
+- glitchedcrown 네임스페이스로 등록된 모든 아이템을 이 탭 하나에서 표시합니다.
+- 기존 Combat / Tools & Utilities / Ingredients / Building Blocks / Functional Blocks 등 바닐라 탭에 수동으로 추가하던 코드를 제거했습니다.
+- 다른 Creative Tab이 The Crowns 아이템을 자동/수동으로 추가하더라도 BuildCreativeModeTabContentsEvent에서 제거하여 전용 탭만 권위 있는 노출 위치가 되도록 했습니다.
+- 요청의 "모든 The Crowns 아이템"을 그대로 적용하여 U²와 Ender Dragon Spawn Egg를 포함한 등록 아이템 전부가 전용 탭에 표시됩니다.
+
+2. Crown Builder GUI 재배치
+- GUI 높이: 166 -> 180.
+- 제작 3x3 입력 영역을 아래로 8px 이동해 제목과 여백을 확보했습니다.
+- 결과 슬롯/화살표도 제작 영역에 맞춰 아래로 이동했습니다.
+- 플레이어 인벤토리는 아래로 14px 이동하여 제작 영역과 겹쳐 보이던 문제를 해소했습니다.
+- 플레이어 인벤토리 라벨도 새 위치에 맞춰 이동했습니다.
+- 화면 좌측 제목은 "Crown Builder"로 통일하고, 우측에만 "Tier I/II/III/IV"를 표시하여 티어 중복 표기를 제거했습니다.
+- Tier 텍스트는 고정 x좌표가 아니라 우측 정렬로 계산하므로 번역 길이가 달라도 제목과 겹치기 어렵습니다.
+- GUI 텍스처 실제 크기(176x180)를 명시하여 blit UV가 텍스처 크기와 정확히 일치하도록 수정했습니다.
+
+3. 버전
+- Mod version: 1.4.6
+- Network protocol: 9 (패킷 구조 변경 없음)

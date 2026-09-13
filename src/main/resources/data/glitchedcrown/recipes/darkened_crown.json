@@ -1,0 +1,33 @@
+{
+  "type": "glitchedcrown:crown_builder",
+  "category": "equipment",
+  "required_tier": 2,
+  "pattern": [
+    "GCG",
+    "ESE",
+    "OBO"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gilded_blackstone"
+    },
+    "C": {
+      "item": "minecraft:chiseled_polished_blackstone"
+    },
+    "E": {
+      "item": "minecraft:echo_shard"
+    },
+    "S": {
+      "item": "minecraft:sculk_catalyst"
+    },
+    "O": {
+      "item": "minecraft:crying_obsidian"
+    },
+    "B": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "result": {
+    "item": "glitchedcrown:darkened_crown"
+  }
+}

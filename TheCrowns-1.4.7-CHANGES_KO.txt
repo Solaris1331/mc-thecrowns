@@ -1,0 +1,16 @@
+The Crowns 1.4.7 - Forge 1.20.1 변경 사항
+============================================================
+
+1. JEI Crown Builder 레시피 표시 수정
+- 1.4.6에서 IModPlugin#registerRecipes 시점에 Minecraft.level을 조회해 null이면 레시피 등록을 건너뛰던 문제 수정.
+- JEI 런타임이 준비된 뒤 onRuntimeAvailable에서 현재 월드 RecipeManager의 glitchedcrown:crown_builder 레시피를 읽어 JEI IRecipeManager#addRecipes로 등록.
+- 비활성화된 config recipe는 기존처럼 JEI에서 제외.
+- Crown Builder 전용 category/catalyst/recipe transfer handler는 유지.
+
+2. Crown 슬롯 툴팁 중복 수정
+- Standard Crown / Glitched Crown / Unleashed Crown이 수동으로 추가하던 "슬롯 : 머리" 문구 제거.
+- Curios가 제공하는 장착 슬롯 표기만 사용하여 동일 문구가 두 번 표시되지 않도록 수정.
+- U²는 Unleashed Crown tooltip 구현을 상속하므로 동일하게 수정됨.
+
+3. 기타
+- 네트워크 payload 구조 변경 없음. Protocol 9 유지.

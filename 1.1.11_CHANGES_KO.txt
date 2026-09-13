@@ -1,0 +1,7 @@
+Glitched Crown 1.1.11
+
+- FTB Teams 같은 팀 플레이어를 Crown 공격/대상 능력에서 보호합니다.
+- 길들여졌거나 소유자가 있는 엔티티를 Crown 공격/대상 능력에서 보호합니다.
+- Ice and Fire의 길들인 드래곤은 TamableAnimal 계열이므로 자동 보호됩니다.
+- Glitched/Unleashed 삭제 광선, Unleashed 절멸, 적대적 무적 제거, Unleashed 상호 무적 억제,
+  종말의 힘 5초 구속, Crown 무결성 보복 대상 판정에 공통 보호 규칙을 적용합니다.

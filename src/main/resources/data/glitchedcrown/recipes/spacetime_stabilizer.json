@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["GRB", "SCP", "END"],
+  "key": {
+    "G": {"item": "minecraft:glowstone"},
+    "R": {"item": "minecraft:respawn_anchor"},
+    "B": {"tag": "minecraft:beds"},
+    "S": {"item": "minecraft:nether_star"},
+    "C": {"item": "minecraft:clock"},
+    "P": {"item": "minecraft:ender_pearl"},
+    "E": {"item": "minecraft:emerald_block"},
+    "N": {"item": "minecraft:netherite_ingot"},
+    "D": {"item": "minecraft:diamond_block"}
+  },
+  "result": {"item": "glitchedcrown:spacetime_stabilizer"}
+}

@@ -1,0 +1,46 @@
+The Crowns 1.4.10 - Forge 1.20.1 변경 명세
+============================================================
+
+1. 왕관의 기록서(The Crown Codex) 추가
+- Enigmatic Legacy의 The Acknowledgment가 사용하는 Category -> Entry -> Page식 지식 탐색 구조와
+  금색 제목 / 청록 링크 / 자홍색 Hover 강조의 책 UI 방향을 참고한 자체 Lorebook 추가.
+- Patchouli는 새 필수 의존성으로 추가하지 않으며 JEI/EMI/REI와도 독립적으로 작동.
+- 우클릭으로 서버 안전형 전용 2페이지 책 GUI를 연다.
+- The Crowns 전용 Creative Tab에 자동 포함.
+- Book + Amethyst Shard shapeless 레시피로 제작 가능.
+- The Crowns 루트 발전과제에서 기록서 레시피를 해금.
+
+2. 지식 구조
+- 첫 화면: 책 소개 + 카테고리 목차.
+- Crown Builder
+- 재료와 구성품
+- Tier I 왕관
+- Tier II 왕관
+- Tier III 왕관
+- Tier IV 왕관
+- 특수 기록
+- 각 카테고리에서 개별 아이템 Entry로 진입하고, Entry는 왼쪽 레시피 페이지와 오른쪽 능력 기록 페이지로 구성.
+- 조합법 안내라는 목적을 해치지 않도록 Acknowledgment식 진행 잠금은 강제하지 않고 모든 레시피 Entry를 처음부터 열람 가능하게 함.
+
+3. 실제 레시피 표시
+- 현재 클라이언트 월드의 RecipeManager#byKey를 직접 읽어 실제 등록된 레시피를 3x3 형태로 렌더링.
+- Crown Builder custom recipe의 정확한 Potion 슬롯을 Potion ItemStack으로 표시.
+- 실제 인챈트가 필요한 Enchanted Book 슬롯을 별도 표시.
+- 레시피 결과와 재료 아이콘 Hover 시 실제 아이템 Tooltip 표시.
+- 각 Crown의 요구 Builder Tier 표시.
+- Warrior Strength II, Dimensional Enchanted Book, Angelic Potion, Glitched Dragon Egg 반환,
+  Unleashed advancement 조건을 별도 주의문으로 표시.
+- U² 및 Ender Dragon Spawn Egg처럼 자체 제작법이 없는 항목은 '제작법 없음'으로 명시.
+
+4. 능력 기록
+- 기존 ko_kr/en_us Crown 설명 키를 재사용해 실제 Crown 스탯/패시브/액티브 설명을 표시.
+- Ironforged / Warrior / Angelic의 액티브 설명도 기록서에 포함.
+- 긴 내용은 오른쪽 페이지를 마우스 휠로 스크롤 가능.
+- 한국어/영어 지원.
+
+5. 호환성
+- 네트워크 패킷 추가 없음. 프로토콜 9 유지.
+- 내부 mod id glitchedcrown 유지.
+- Curios 필수 의존성 유지.
+- Patchouli 의존성 없음.
+- 기존 JEI / EMI / REI optional integration은 제거하지 않고 그대로 유지.

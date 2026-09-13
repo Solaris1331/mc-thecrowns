@@ -1,0 +1,37 @@
+{
+  "type": "glitchedcrown:crown_builder",
+  "category": "equipment",
+  "required_tier": 3,
+  "pattern": [
+    "FHF",
+    "SES",
+    "PDP"
+  ],
+  "key": {
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "H": {
+      "item": "minecraft:honeycomb_block"
+    },
+    "S": {
+      "item": "minecraft:shulker_shell"
+    },
+    "E": {
+      "item": "minecraft:elytra"
+    },
+    "P": {
+      "item": "minecraft:potion"
+    },
+    "D": {
+      "item": "minecraft:diamond_block"
+    }
+  },
+  "potion_slots": {
+    "6": "minecraft:slow_falling",
+    "8": "minecraft:leaping"
+  },
+  "result": {
+    "item": "glitchedcrown:angelic_crown"
+  }
+}

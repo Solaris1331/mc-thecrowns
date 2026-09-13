@@ -1,0 +1,23 @@
+Glitched Crown 1.0.6 - BuildFix3 / Runtime Mixin Fix
+=====================================================
+
+증상
+- 런타임에서 glitchedcrown.mixins.json:LivingEntityMixin 적용 실패.
+- 실패 핸들러: glitchedcrown$blockExternalEquipmentReplacement
+- Mixin PREINJECT 단계에서 InsnList.indexOf(null) NPE.
+
+원인
+- LivingEntity#setItemSlot은 이 계층에서 추상 메서드이므로 메서드 본문/HEAD 명령이 없다.
+- 추상 메서드에 @Inject(at=@At("HEAD"))를 준비하면서 주입 지점을 만들 수 없어 런타임 Mixin 변환이 실패했다.
+
+수정
+- LivingEntityMixin에서 setItemSlot 보호 훅 제거.
+- 새 PlayerMixin을 추가하여 Player#setItemSlot의 HEAD에서 동일한 HEAD 슬롯 교체 보호 수행.
+- glitchedcrown.mixins.json에 PlayerMixin 추가.
+
+변경하지 않은 기능
+- 삭제광선: 최대 체력 100% 피해 -> kill() -> 조건 없는 die(source)
+- 삭제광선의 discard 미사용
+- 중복 드롭 가능성은 의도대로 유지
+- CrownIntegrity 스냅샷 복구 및 간섭자 처벌
+- 해로운 효과 차단 / 무적 / 부활 로직

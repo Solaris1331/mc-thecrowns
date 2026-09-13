@@ -1,0 +1,53 @@
+The Crowns 1.4.11 - Forge 1.20.1 변경 명세
+============================================================
+
+1. JEI Crown Builder 표시 실패 수정
+------------------------------------------------------------
+사용자 런타임 로그에서 JEI 15.20.0.133이 The Crowns JEI 플러그인의
+CrownBuilderRecipeCategory 생성 중 다음 NoSuchMethodError로 중단되는 것을 확인했다.
+
+- 잘못 컴파일된 호출:
+  IGuiHelper.createBlankDrawable(int, int) -> IDrawable
+- JEI 실제 API:
+  IGuiHelper.createBlankDrawable(int, int) -> IDrawableStatic
+
+반환형이 JVM 메서드 descriptor의 일부이므로, 오프라인 컴파일용 stub의 잘못된
+반환형 때문에 실제 JEI에서 메서드를 찾지 못하고 category 등록 전체가 실패했다.
+
+2. blank drawable 의존 제거
+------------------------------------------------------------
+CrownBuilderRecipeCategory는 JEI 15.20+ 방식에 맞춰 blank background를 생성하지 않고
+getWidth()=128 / getHeight()=78을 직접 반환하도록 변경했다.
+따라서 문제가 된 createBlankDrawable 호출 자체가 최종 bytecode에서 사라졌다.
+
+3. JEI ingredient acceptor ABI 추가 수정
+------------------------------------------------------------
+기존 stub은 IRecipeSlotBuilder에 addIngredients(Ingredient) / addItemStack(ItemStack)을
+직접 선언하고 반환형을 IRecipeSlotBuilder로 만들고 있었다.
+실제 JEI에서는 두 메서드가 상위 IIngredientAcceptor<THIS>의 default method이며,
+JVM erasure 반환형은 IIngredientAcceptor다.
+
+1.4.11에서는:
+- IIngredientAcceptor stub을 실제 상속 구조에 맞춰 추가.
+- IRecipeSlotBuilder가 IIngredientAcceptor<IRecipeSlotBuilder>를 상속하도록 수정.
+- CrownBuilderRecipeCategory에서 ingredient 추가 호출을 IIngredientAcceptor 경로로 명시.
+- 최종 bytecode descriptor를 실제 JEI API와 일치하도록 교정.
+
+이 수정은 createBlankDrawable 문제를 고친 직후 다음 단계에서 발생할 수 있었던
+추가 NoSuchMethodError를 예방한다.
+
+4. JEI stub ABI 보정
+------------------------------------------------------------
+- IDrawableStatic extends IDrawable stub 추가.
+- IGuiHelper#createBlankDrawable 반환형을 IDrawableStatic으로 교정.
+- IRecipeCategory stub에 JEI 15.20+의 nullable background / width / height 구조 반영.
+- stub들은 계속 compile-only 별도 source set이며 최종 mod JAR에는 포함되지 않는다.
+
+5. 유지 사항
+------------------------------------------------------------
+- Crown Builder 실제 레시피 10개 유지.
+- JEI registerRecipes 정식 등록 경로 유지.
+- Builder I~IV catalyst 및 recipe transfer 유지.
+- EMI / REI optional integration 유지.
+- Crown Codex(Lorebook) 유지.
+- 네트워크 프로토콜 9 유지.

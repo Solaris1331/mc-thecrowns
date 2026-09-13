@@ -1,0 +1,8 @@
+Glitched Crown 1.1.8 변경사항
+
+- Ice and Fire의 Fire/Ice/Lightning Dragon을 삭제 광선으로 막타칠 때 시체가 강제 제거되던 문제 수정.
+  - Glitched G: raw-health 피해와 die()는 유지하되 I&F 드래곤은 후속 kill()/discard() 생략.
+  - Unleashed G: I&F 드래곤은 raw-health 붕괴 후 정상 die() 시체 경로 사용.
+  - 다른 대상의 VP Cruel Shield/OverShield 우회 및 강제 제거 로직은 유지.
+- Glitched/Unleashed 툴팁 단축키가 현재 조작키 설정을 실시간으로 표시하도록 변경.
+- Crown 자체가 수동으로 추가하던 '슬롯 : 머리' 문구 제거. Curios/장비 툴팁이 제공하는 슬롯 표기만 남김.
