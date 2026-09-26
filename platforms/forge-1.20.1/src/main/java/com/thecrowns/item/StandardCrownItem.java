@@ -97,6 +97,8 @@ public final class StandardCrownItem extends ArmorItem implements ICurioItem {
             case "frost_crown" -> appendSimple(root, 4, tooltip);
             case "divine_crown" -> appendDivine(stack, level, tooltip);
             case "cursed_crown" -> appendCursed(stack, level, tooltip);
+            case "shadow_crown" -> appendSimple(root, 5, tooltip);
+            case "abyssal_crown" -> appendSimple(root, 5, tooltip);
             default -> appendSimple(root, 0, tooltip);
         }
     }
@@ -104,7 +106,7 @@ public final class StandardCrownItem extends ArmorItem implements ICurioItem {
     private void appendBurning(List<Component> tooltip) {
         blank(tooltip);
         appendLines(root, "passive", 4, tooltip, ChatFormatting.LIGHT_PURPLE);
-        tooltip.add(Component.translatable("tooltip.thecrowns.cooldown.same_target", 1)
+        tooltip.add(Component.translatable("tooltip.thecrowns.cooldown.same_target", "1.5")
                 .withStyle(ChatFormatting.YELLOW));
     }
 
@@ -122,8 +124,8 @@ public final class StandardCrownItem extends ArmorItem implements ICurioItem {
         tooltip.add(Component.translatable("tooltip.thecrowns.bloody_crown.blessing", stacks, NewCrownLogic.BLOODY_MAX_STACKS)
                 .withStyle(ChatFormatting.DARK_RED));
         appendLines(root, "passive", 1, tooltip, ChatFormatting.LIGHT_PURPLE);
-        appendCooldown(stack, level, NewCrownLogic.TAG_BLOODY_READY_AT, 30, tooltip);
-        appendLines(root, "passive", 2, 2, tooltip, ChatFormatting.LIGHT_PURPLE);
+        appendCooldown(stack, level, NewCrownLogic.TAG_BLOODY_READY_AT, 40, tooltip);
+        appendLines(root, "passive", 2, tooltip, ChatFormatting.LIGHT_PURPLE);
     }
 
     private void appendWarrior(ItemStack stack, @Nullable Level level, List<Component> tooltip) {
@@ -148,7 +150,7 @@ public final class StandardCrownItem extends ArmorItem implements ICurioItem {
                     .withStyle(ChatFormatting.YELLOW));
         }
         blank(tooltip);
-        appendLines(root, "passive", 3, tooltip, ChatFormatting.LIGHT_PURPLE);
+        appendLines(root, "passive", 4, tooltip, ChatFormatting.LIGHT_PURPLE);
         blank(tooltip);
         title("tooltip.thecrowns.angelic_crown.active.title", tooltip);
         appendLines(root, "active", 1, tooltip, ChatFormatting.LIGHT_PURPLE);
@@ -185,7 +187,7 @@ public final class StandardCrownItem extends ArmorItem implements ICurioItem {
     private void appendDivine(ItemStack stack, @Nullable Level level, List<Component> tooltip) {
         blank(tooltip);
         title("tooltip.thecrowns.divine_crown.passive.title", tooltip);
-        appendLines(root, "passive", 1, tooltip, ChatFormatting.LIGHT_PURPLE);
+        appendLines(root, "passive", 2, tooltip, ChatFormatting.LIGHT_PURPLE);
         blank(tooltip);
         title("tooltip.thecrowns.divine_crown.active.title", tooltip);
         appendLines(root, "active", 2, tooltip, ChatFormatting.LIGHT_PURPLE);
@@ -294,6 +296,8 @@ public final class StandardCrownItem extends ArmorItem implements ICurioItem {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        if ("shadow_crown".equals(root)) return "thecrowns:textures/models/armor/shadow_crown_layer_1.png";
+        if ("abyssal_crown".equals(root)) return "thecrowns:textures/models/armor/abyssal_crown_layer_1.png";
         return "thecrowns:textures/models/armor/" + root + "_layer_1.png";
     }
 }

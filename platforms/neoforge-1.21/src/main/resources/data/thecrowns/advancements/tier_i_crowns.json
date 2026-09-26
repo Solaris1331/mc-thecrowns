@@ -1,0 +1,28 @@
+{
+  "parent": "thecrowns:builder_i",
+  "display": {
+    "icon": {
+      "item": "thecrowns:burning_crown"
+    },
+    "title": {
+      "translate": "advancement.thecrowns.tier_i_crowns.title"
+    },
+    "description": {
+      "translate": "advancement.thecrowns.tier_i_crowns.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "complete": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "complete"
+    ]
+  ]
+}

@@ -138,17 +138,20 @@ public class GlitchedCrownItem extends ArmorItem implements ICurioItem {
     }
 
     protected boolean usesFixedFullPowerStats() { return false; }
+    protected boolean usesUnleashedStats() { return false; }
 
     protected void appendSharedStats(List<Component> tooltip) {
         boolean fixed = usesFixedFullPowerStats();
-        double health = fixed ? 80.0D : CrownServerConfig.BONUS_MAX_HEALTH.get();
-        double armor = fixed ? 40.0D : CrownServerConfig.BONUS_ARMOR.get();
-        double toughness = fixed ? 40.0D : CrownServerConfig.BONUS_TOUGHNESS.get();
-        double luck = fixed ? 7.0D : CrownServerConfig.BONUS_LUCK.get();
-        int looting = fixed ? 7 : CrownServerConfig.BONUS_LOOTING.get();
-        double damage = fixed ? 40.0D : CrownServerConfig.BONUS_ATTACK_DAMAGE.get();
-        double reach = fixed ? 3.5D : CrownServerConfig.BONUS_INTERACTION_REACH.get();
-        double kbPct = (fixed ? 1.0D : CrownServerConfig.BONUS_KNOCKBACK_RESISTANCE.get()) * 100.0D;
+        boolean unleashed = usesUnleashedStats();
+        double health = fixed ? 160.0D : unleashed ? CrownServerConfig.UNLEASHED_BONUS_MAX_HEALTH.get() : CrownServerConfig.BONUS_MAX_HEALTH.get();
+        double armor = fixed ? 80.0D : unleashed ? CrownServerConfig.UNLEASHED_BONUS_ARMOR.get() : CrownServerConfig.BONUS_ARMOR.get();
+        double toughness = fixed ? 80.0D : unleashed ? CrownServerConfig.UNLEASHED_BONUS_TOUGHNESS.get() : CrownServerConfig.BONUS_TOUGHNESS.get();
+        double luck = fixed ? 14.0D : unleashed ? CrownServerConfig.UNLEASHED_BONUS_LUCK.get() : CrownServerConfig.BONUS_LUCK.get();
+        int looting = fixed ? 14 : unleashed ? CrownServerConfig.UNLEASHED_BONUS_LOOTING.get() : CrownServerConfig.BONUS_LOOTING.get();
+        double damage = fixed ? 80.0D : unleashed ? CrownServerConfig.UNLEASHED_BONUS_ATTACK_DAMAGE.get() : CrownServerConfig.BONUS_ATTACK_DAMAGE.get();
+        double reach = fixed ? 7.0D : unleashed ? CrownServerConfig.UNLEASHED_BONUS_INTERACTION_REACH.get() : CrownServerConfig.BONUS_INTERACTION_REACH.get();
+        double kbPct = (fixed ? 2.0D : unleashed ? CrownServerConfig.UNLEASHED_BONUS_KNOCKBACK_RESISTANCE.get()
+                : CrownServerConfig.BONUS_KNOCKBACK_RESISTANCE.get()) * 100.0D;
         Object[] values = { fmt(health), fmt(armor), fmt(toughness), fmt(luck), looting, fmt(damage), fmt(reach), fmt(reach), fmt(kbPct) };
         for (int i = 1; i <= statLineCount(); i++) {
             tooltip.add(Component.translatable("tooltip.thecrowns.stat." + i, values[i - 1])

@@ -1,0 +1,32 @@
+{
+  "parent": "thecrowns:tier_i_crowns",
+  "display": {
+    "icon": {
+      "item": "thecrowns:crown_builder_t2"
+    },
+    "title": {
+      "translate": "advancement.thecrowns.builder_ii.title"
+    },
+    "description": {
+      "translate": "advancement.thecrowns.builder_ii.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_builder": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "thecrowns:crown_builder_t2"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

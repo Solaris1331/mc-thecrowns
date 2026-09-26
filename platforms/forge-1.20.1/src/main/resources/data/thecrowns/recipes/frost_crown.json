@@ -11,8 +11,8 @@
     "N": {"item": "minecraft:snowball"},
     "T": {"item": "minecraft:potion"}
   },
-  "effect_slots": {
-    "7": {"effect": "minecraft:slowness", "amplifier": 1}
+  "potion_slots": {
+    "7": "minecraft:slowness"
   },
   "result": {"item": "thecrowns:frost_crown"}
 }

@@ -1,0 +1,18 @@
+{
+  "type": "thecrowns:crown_builder",
+  "category": "equipment",
+  "required_tier": 1,
+  "pattern": ["PSA", "BHB", "DWE"],
+  "key": {
+    "P": {"item": "minecraft:pufferfish"},
+    "S": {"item": "minecraft:sponge"},
+    "A": {"item": "minecraft:salmon"},
+    "B": {"item": "minecraft:prismarine_bricks"},
+    "H": {"item": "minecraft:heart_of_the_sea"},
+    "D": {"item": "minecraft:diamond_block"},
+    "W": {"item": "minecraft:potion"},
+    "E": {"item": "minecraft:emerald_block"}
+  },
+  "potion_slots": {"7": "minecraft:water_breathing"},
+  "result": {"item": "thecrowns:abyssal_crown"}
+}

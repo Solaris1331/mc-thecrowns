@@ -1,0 +1,14 @@
+{
+  "parent": "thecrowns:builder_i",
+  "display": {
+    "icon": { "item": "thecrowns:frost_crown" },
+    "title": { "translate": "advancement.thecrowns.frost_crown.title" },
+    "description": { "translate": "advancement.thecrowns.frost_crown.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": { "crafted": { "trigger": "minecraft:impossible" } },
+  "requirements": [["crafted"]]
+}

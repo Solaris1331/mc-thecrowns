@@ -53,15 +53,15 @@ public final class CrownAdvancements {
     }
 
     private static void updateTierSummaries(ServerPlayer player) {
-        if (done(player, "burning_crown") && done(player, "ironforged_crown") && done(player, "frost_crown")) {
+        if (done(player, "burning_crown") || done(player, "ironforged_crown") || done(player, "frost_crown")) {
             award(player, "tier_i_crowns", "complete");
         }
-        if (done(player, "bloody_crown") && done(player, "darkened_crown") && done(player, "warrior_crown")
-                && done(player, "divine_crown")) {
+        if (done(player, "bloody_crown") || done(player, "darkened_crown") || done(player, "warrior_crown")
+                || done(player, "divine_crown")) {
             award(player, "tier_ii_crowns", "complete");
         }
-        if (done(player, "crown_of_light") && done(player, "dimensional_crown") && done(player, "angelic_crown")
-                && done(player, "temporal_crown")) {
+        if (done(player, "crown_of_light") || done(player, "dimensional_crown") || done(player, "angelic_crown")
+                || done(player, "temporal_crown")) {
             award(player, "tier_iii_crowns", "complete");
         }
     }

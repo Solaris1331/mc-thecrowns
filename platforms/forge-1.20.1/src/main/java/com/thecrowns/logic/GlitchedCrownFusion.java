@@ -23,7 +23,7 @@ public final class GlitchedCrownFusion {
             "burning_crown", "ironforged_crown", "frost_crown",
             "bloody_crown", "darkened_crown", "warrior_crown", "divine_crown",
             "crown_of_light", "dimensional_crown", "angelic_crown", "temporal_crown",
-            "cursed_crown");
+            "cursed_crown", "shadow_crown", "abyssal_crown");
 
     private GlitchedCrownFusion() {}
 

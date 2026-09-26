@@ -30,6 +30,11 @@ public final class ModBlocks {
                     .strength(7.0F, 1200.0F)
                     .sound(SoundType.AMETHYST)));
 
+    public static final RegistryObject<Block> COMPRESSED_COAL_BLOCK = BLOCKS.register("compressed_coal_block",
+            () -> new Block(BlockBehaviour.Properties.copy(Blocks.COAL_BLOCK)
+                    .strength(6.0F, 12.0F)
+                    .sound(SoundType.STONE)));
+
     private static final float BUILDER_BLAST_RESISTANCE = 3_600_000.0F;
 
     public static final RegistryObject<Block> CROWN_BUILDER_T1 = BLOCKS.register("crown_builder_t1",

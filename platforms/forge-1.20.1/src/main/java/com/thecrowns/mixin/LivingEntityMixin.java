@@ -2,6 +2,7 @@ package com.thecrowns.mixin;
 
 import com.thecrowns.logic.CrownIntegrity;
 import com.thecrowns.logic.CrownLogic;
+import com.thecrowns.logic.ShadowAbyssalLogic;
 import com.thecrowns.logic.NewCrownLogic;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -47,23 +48,6 @@ public abstract class LivingEntityMixin {
             return 0.0F;
         }
         return resolved;
-    }
-
-    /** Apply the Iron Guardian's per-hit limit after Forge and every normal final-damage modifier. */
-    @Redirect(
-            method = "actuallyHurt",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraftforge/common/ForgeHooks;onLivingDamage(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/damagesource/DamageSource;F)F",
-                    remap = false
-            ),
-            require = 0
-    )
-    private float thecrowns$capIronGuardianFinalDamage(
-            LivingEntity target, DamageSource source, float amount
-    ) {
-        float resolved = ForgeHooks.onLivingDamage(target, source, amount);
-        return NewCrownLogic.capIronforgedFinalDamage(target, resolved);
     }
 
     @Inject(method = "hurt", at = @At("HEAD"), require = 0)
@@ -125,7 +109,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "knockback", at = @At("HEAD"), cancellable = true, require = 0)
     private void thecrowns$blockKnockback(double strength, double x, double z, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (CrownLogic.isMovementLocked(self) || CrownLogic.isFateBound(self)) {
+        if (CrownLogic.isMovementLocked(self) || ShadowAbyssalLogic.hasShadowHook(self) || CrownLogic.isFateBound(self)) {
             ci.cancel();
         }
     }
@@ -139,7 +123,7 @@ public abstract class LivingEntityMixin {
             }
             return NewCrownLogic.protectSetHealth(player, requestedHealth);
         }
-        return requestedHealth;
+        return CrownLogic.clampSetHealth(self, requestedHealth);
     }
 
     @Inject(method = "isDamageSourceBlocked", at = @At("HEAD"), cancellable = true, require = 0)

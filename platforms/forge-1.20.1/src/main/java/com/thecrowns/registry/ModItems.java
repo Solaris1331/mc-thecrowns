@@ -50,7 +50,7 @@ public final class ModItems {
     public static final RegistryObject<StandardCrownItem> BURNING_CROWN = standardCrown(
             "burning_crown", "burning_crown", 3, null);
     public static final RegistryObject<StandardCrownItem> DARKENED_CROWN = standardCrown(
-            "darkened_crown", "darkened_crown", 2, null);
+            "darkened_crown", "darkened_crown", 1, null);
     public static final RegistryObject<StandardCrownItem> IRONFORGED_CROWN = standardCrown(
             "ironforged_crown", "ironforged_crown", 3, "key.thecrowns.summon_iron_golem");
     public static final RegistryObject<StandardCrownItem> DIMENSIONAL_CROWN = standardCrown(
@@ -65,9 +65,13 @@ public final class ModItems {
     public static final RegistryObject<StandardCrownItem> FROST_CROWN = standardCrown(
             "frost_crown", "frost_crown", 3, null);
     public static final RegistryObject<StandardCrownItem> DIVINE_CROWN = standardCrown(
-            "divine_crown", "divine_crown", 5, null);
+            "divine_crown", "divine_crown", 4, null);
     public static final RegistryObject<StandardCrownItem> CURSED_CROWN = standardCrown(
             "cursed_crown", "cursed_crown", 6, null);
+    public static final RegistryObject<StandardCrownItem> SHADOW_CROWN = standardCrown(
+            "shadow_crown", "shadow_crown", 2, null);
+    public static final RegistryObject<StandardCrownItem> ABYSSAL_CROWN = standardCrown(
+            "abyssal_crown", "abyssal_crown", 2, null);
 
     public static final RegistryObject<CrownLorebookItem> CROWN_LOREBOOK = ITEMS.register("crown_lorebook",
             () -> new CrownLorebookItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
@@ -87,6 +91,8 @@ public final class ModItems {
 
     public static final RegistryObject<BlockItem> COMPRESSED_EMERALD_BLOCK = ITEMS.register("compressed_emerald_block",
             () -> new BlockItem(ModBlocks.COMPRESSED_EMERALD_BLOCK.get(), new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final RegistryObject<BlockItem> COMPRESSED_COAL_BLOCK = ITEMS.register("compressed_coal_block",
+            () -> new BlockItem(ModBlocks.COMPRESSED_COAL_BLOCK.get(), new Item.Properties().rarity(Rarity.UNCOMMON)));
 
     public static final RegistryObject<CrownBuilderBlockItem> CROWN_BUILDER_T1 = ITEMS.register("crown_builder_t1",
             () -> new CrownBuilderBlockItem(ModBlocks.CROWN_BUILDER_T1.get(), new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));

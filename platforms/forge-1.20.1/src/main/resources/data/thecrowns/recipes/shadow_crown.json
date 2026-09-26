@@ -1,0 +1,16 @@
+{
+  "type": "thecrowns:crown_builder",
+  "category": "equipment",
+  "required_tier": 1,
+  "pattern": ["WKS", "CNC", "OAO"],
+  "key": {
+    "W": {"item": "minecraft:wither_rose"},
+    "K": {"item": "minecraft:wither_skeleton_skull"},
+    "S": {"item": "minecraft:sculk"},
+    "C": {"item": "thecrowns:compressed_coal_block"},
+    "N": {"item": "minecraft:netherite_ingot"},
+    "O": {"item": "minecraft:obsidian"},
+    "A": {"item": "minecraft:sculk_catalyst"}
+  },
+  "result": {"item": "thecrowns:shadow_crown"}
+}

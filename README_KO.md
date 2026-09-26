@@ -12,9 +12,11 @@ The Crowns는 1.0.0 베타로 새롭게 시작하는 Minecraft 장비·진행 �
 
 ## 현재 상태
 
-`platforms/forge-1.20.1`에 `thecrowns` 1.0.0-beta.1 기준선을 준비했습니다. 이 기준선을 검증한 뒤 NeoForge 1.21과 1.21.1을 추가합니다.
+`platforms/forge-1.20.1`의 최신 버전은 **1.0.4**입니다. 이 기준선을 바탕으로 `platforms/neoforge-1.21`과 `platforms/neoforge-1.21.1`에 Java 21 NeoForge 이식을 진행합니다.
 
 기존 `glitchedcrown` Forge 1.20.1 1.5.3 소스와 베타 이력은 `docs/legacy/forge-1.20.1/`, Git 태그 `forge-1.20.1-1.5.3`에 보존합니다.
+
+일반 채팅·검토에 사용할 1.0.4 JAR과 현재 상태 요약은 [`releases/1.0.4/`](releases/1.0.4/)에 보관합니다. 구현 소스는 계속 `platforms/` 아래에서 관리합니다.
 
 ## 빌드
 

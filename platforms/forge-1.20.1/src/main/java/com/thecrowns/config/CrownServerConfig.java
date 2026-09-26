@@ -18,6 +18,7 @@ public final class CrownServerConfig {
     public static final ForgeConfigSpec SPEC;
 
     public static final ForgeConfigSpec.BooleanValue DEBUG_LOGGING;
+    public static final ForgeConfigSpec.IntValue CROWN_SLOT_COUNT;
 
     public static final ForgeConfigSpec.BooleanValue PROTECT_FTB_TEAMS;
     public static final ForgeConfigSpec.BooleanValue PROTECT_SCOREBOARD_TEAMS;
@@ -47,6 +48,7 @@ public final class CrownServerConfig {
     public static final ForgeConfigSpec.DoubleValue FROST_STACK_INTERNAL_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.IntValue FROST_DECAY_SECONDS;
     public static final ForgeConfigSpec.IntValue FROST_FREEZE_SECONDS;
+    public static final ForgeConfigSpec.IntValue FROST_BOSS_PLAYER_FREEZE_SECONDS;
     public static final ForgeConfigSpec.IntValue FROST_REFREEZE_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.IntValue FROST_BOSS_PLAYER_REFREEZE_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.DoubleValue FROST_BONUS_DAMAGE;
@@ -67,7 +69,7 @@ public final class CrownServerConfig {
     public static final ForgeConfigSpec.DoubleValue CURSED_PENALTY_FRACTION;
     public static final ForgeConfigSpec.IntValue CURSED_LOOTING_BONUS;
     public static final ForgeConfigSpec.DoubleValue CURSED_LUCK_BONUS;
-    public static final ForgeConfigSpec.DoubleValue CURSED_EXPERIENCE_MULTIPLIER;
+    public static final ForgeConfigSpec.DoubleValue CURSED_EXPERIENCE_BONUS_FRACTION;
     public static final ForgeConfigSpec.IntValue CURSED_LIBERATION_DURATION_SECONDS;
     public static final ForgeConfigSpec.IntValue CURSED_LIBERATION_COOLDOWN_SECONDS;
     public static final ForgeConfigSpec.DoubleValue CURSED_LIBERATION_RADIUS;
@@ -134,6 +136,14 @@ public final class CrownServerConfig {
     public static final ForgeConfigSpec.DoubleValue BONUS_ATTACK_DAMAGE;
     public static final ForgeConfigSpec.DoubleValue BONUS_KNOCKBACK_RESISTANCE;
     public static final ForgeConfigSpec.DoubleValue BONUS_INTERACTION_REACH;
+    public static final ForgeConfigSpec.DoubleValue UNLEASHED_BONUS_MAX_HEALTH;
+    public static final ForgeConfigSpec.DoubleValue UNLEASHED_BONUS_ARMOR;
+    public static final ForgeConfigSpec.DoubleValue UNLEASHED_BONUS_TOUGHNESS;
+    public static final ForgeConfigSpec.DoubleValue UNLEASHED_BONUS_LUCK;
+    public static final ForgeConfigSpec.IntValue UNLEASHED_BONUS_LOOTING;
+    public static final ForgeConfigSpec.DoubleValue UNLEASHED_BONUS_ATTACK_DAMAGE;
+    public static final ForgeConfigSpec.DoubleValue UNLEASHED_BONUS_KNOCKBACK_RESISTANCE;
+    public static final ForgeConfigSpec.DoubleValue UNLEASHED_BONUS_INTERACTION_REACH;
 
     /** Legacy config entries retained only so existing config files remain readable; no crit bonus is applied. */
     public static final ForgeConfigSpec.DoubleValue FATE_HALF_CRIT_CHANCE;
@@ -155,6 +165,11 @@ public final class CrownServerConfig {
         b.push("general");
         DEBUG_LOGGING = b.comment("Log blocked movement/target decisions for pack debugging.")
                 .define("debugLogging", false);
+        b.pop();
+
+        b.comment("Curios Crown slot settings.").push("curios");
+        CROWN_SLOT_COUNT = b.comment("Number of dedicated Crown slots available to each player.")
+                .defineInRange("crownSlotCount", 1, 1, 16);
         b.pop();
 
         b.push("targeting");
@@ -190,20 +205,21 @@ public final class CrownServerConfig {
         FROST_STACK_INTERNAL_COOLDOWN_SECONDS = b.defineInRange("stackInternalCooldownSeconds", 0.50D, 0.0D, 86400.0D);
         FROST_DECAY_SECONDS = b.defineInRange("stackDecaySeconds", 5, 1, 86400);
         FROST_FREEZE_SECONDS = b.defineInRange("freezeDurationSeconds", 3, 1, 86400);
+        FROST_BOSS_PLAYER_FREEZE_SECONDS = b.defineInRange("bossPlayerFreezeDurationSeconds", 2, 1, 86400);
         FROST_REFREEZE_COOLDOWN_SECONDS = b.defineInRange("refreezeCooldownSeconds", 10, 0, 86400);
         FROST_BOSS_PLAYER_REFREEZE_COOLDOWN_SECONDS = b.defineInRange("bossPlayerRefreezeCooldownSeconds", 20, 0, 86400);
         FROST_BONUS_DAMAGE = b.defineInRange("bonusColdDamage", 3.0D, 0.0D, 1000000.0D);
         b.pop();
 
         b.comment("Divine Crown tuning. Fractions use 0.30 = 30%.").push("divineCrown");
-        DIVINE_FLAT_MAX_HEALTH = b.defineInRange("flatMaxHealth", 30.0D, -1000000.0D, 1000000.0D);
-        DIVINE_PERCENT_MAX_HEALTH = b.defineInRange("percentMaxHealth", 0.30D, -0.99D, 1000.0D);
-        DIVINE_ARMOR = b.defineInRange("armor", 15.0D, -1000000.0D, 1000000.0D);
-        DIVINE_TOUGHNESS = b.defineInRange("armorToughness", 5.0D, -1000000.0D, 1000000.0D);
-        DIVINE_HEALING_MULTIPLIER = b.defineInRange("healingReceivedMultiplier", 1.30D, 0.0D, 1000.0D);
+        DIVINE_FLAT_MAX_HEALTH = b.defineInRange("flatMaxHealth", 25.0D, -1000000.0D, 1000000.0D);
+        DIVINE_PERCENT_MAX_HEALTH = b.defineInRange("percentMaxHealth", 0.25D, -0.99D, 1000.0D);
+        DIVINE_ARMOR = b.defineInRange("armor", 5.0D, -1000000.0D, 1000000.0D);
+        DIVINE_TOUGHNESS = b.defineInRange("armorToughness", 0.0D, -1000000.0D, 1000000.0D);
+        DIVINE_HEALING_MULTIPLIER = b.defineInRange("healingReceivedMultiplier", 1.35D, 0.0D, 1000.0D);
         DIVINE_NEGATIVE_EFFECT_BASE_HEAL = b.defineInRange("negativeEffectBaseHeal", 3.0D, 0.0D, 1000000.0D);
         DIVINE_NEGATIVE_EFFECT_MAX_HEALTH_FRACTION = b.defineInRange("negativeEffectMaxHealthHealFraction", 0.03D, 0.0D, 1000.0D);
-        DIVINE_NEGATIVE_EFFECT_COOLDOWN_SECONDS = b.defineInRange("negativeEffectCooldownSeconds", 2.0D, 0.0D, 86400.0D);
+        DIVINE_NEGATIVE_EFFECT_COOLDOWN_SECONDS = b.defineInRange("negativeEffectCooldownSeconds", 3.0D, 0.0D, 86400.0D);
         DIVINE_POSITIVE_EFFECT_DURATION_FRACTION = b.defineInRange("positiveEffectDurationFraction", 0.50D, 0.0D, 1000.0D);
         DIVINE_SANCTIFY_COOLDOWN_SECONDS = b.defineInRange("sanctifyCooldownSeconds", 180, 0, 864000);
         DIVINE_SANCTIFY_SOLO_REDUCTION_SECONDS = b.defineInRange("sanctifySoloCooldownReductionSeconds", 90, 0, 864000);
@@ -214,7 +230,7 @@ public final class CrownServerConfig {
         CURSED_PENALTY_FRACTION = b.defineInRange("penaltyFraction", 0.50D, 0.0D, 1.0D);
         CURSED_LOOTING_BONUS = b.defineInRange("lootingBonus", 7, -1000000, 1000000);
         CURSED_LUCK_BONUS = b.defineInRange("luckBonus", 7.0D, -1000000.0D, 1000000.0D);
-        CURSED_EXPERIENCE_MULTIPLIER = b.defineInRange("experienceDropMultiplier", 2.50D, 0.0D, 1000000.0D);
+        CURSED_EXPERIENCE_BONUS_FRACTION = b.defineInRange("experienceBonusFraction", 3.0D, 0.0D, 1000000.0D);
         CURSED_LIBERATION_DURATION_SECONDS = b.defineInRange("liberationDurationSeconds", 60, 1, 86400);
         CURSED_LIBERATION_COOLDOWN_SECONDS = b.defineInRange("liberationCooldownSeconds", 600, 0, 864000);
         CURSED_LIBERATION_RADIUS = b.defineInRange("liberationRadius", 30.0D, 0.0D, 4096.0D);
@@ -230,6 +246,17 @@ public final class CrownServerConfig {
         BONUS_ATTACK_DAMAGE = b.defineInRange("attackDamage", 40.0D, -1000000.0D, 1000000.0D);
         BONUS_KNOCKBACK_RESISTANCE = b.defineInRange("knockbackResistance", 1.0D, 0.0D, 1000.0D);
         BONUS_INTERACTION_REACH = b.defineInRange("interactionReach", 3.5D, -1000.0D, 1000.0D);
+        b.pop();
+
+        b.comment("Unleashed Crown base stats. Kept separate from the Glitched Crown shared stats.").push("unleashedStats");
+        UNLEASHED_BONUS_MAX_HEALTH = b.defineInRange("maxHealth", 160.0D, -1000000.0D, 1000000.0D);
+        UNLEASHED_BONUS_ARMOR = b.defineInRange("armor", 80.0D, -1000000.0D, 1000000.0D);
+        UNLEASHED_BONUS_TOUGHNESS = b.defineInRange("armorToughness", 80.0D, -1000000.0D, 1000000.0D);
+        UNLEASHED_BONUS_LUCK = b.defineInRange("luck", 14.0D, -1000000.0D, 1000000.0D);
+        UNLEASHED_BONUS_LOOTING = b.defineInRange("lootingLevel", 14, -1000000, 1000000);
+        UNLEASHED_BONUS_ATTACK_DAMAGE = b.defineInRange("attackDamage", 80.0D, -1000000.0D, 1000000.0D);
+        UNLEASHED_BONUS_KNOCKBACK_RESISTANCE = b.defineInRange("knockbackResistance", 2.0D, 0.0D, 1000.0D);
+        UNLEASHED_BONUS_INTERACTION_REACH = b.defineInRange("interactionReach", 7.0D, -1000.0D, 1000.0D);
         b.pop();
 
         b.push("glitched");

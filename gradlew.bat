@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableExtensions
-set "GRADLE_VERSION=8.8"
+set "GRADLE_VERSION=8.14"
 set "BOOT_DIR=%~dp0.gradle-bootstrap"
 set "GRADLE_HOME=%BOOT_DIR%\gradle-%GRADLE_VERSION%"
 set "ZIP=%BOOT_DIR%\gradle-%GRADLE_VERSION%-bin.zip"

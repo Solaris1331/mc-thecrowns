@@ -1,0 +1,28 @@
+{
+  "parent": "thecrowns:builder_ii",
+  "display": {
+    "icon": {
+      "item": "thecrowns:darkened_crown"
+    },
+    "title": {
+      "translate": "advancement.thecrowns.darkened_crown.title"
+    },
+    "description": {
+      "translate": "advancement.thecrowns.darkened_crown.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "crafted": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "crafted"
+    ]
+  ]
+}

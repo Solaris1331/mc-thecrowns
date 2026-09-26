@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "thecrowns:burning_crown",
+    "thecrowns:ironforged_crown",
+    "thecrowns:frost_crown",
+    "thecrowns:bloody_crown",
+    "thecrowns:darkened_crown",
+    "thecrowns:warrior_crown",
+    "thecrowns:divine_crown",
+    "thecrowns:crown_of_light",
+    "thecrowns:dimensional_crown",
+    "thecrowns:angelic_crown",
+    "thecrowns:temporal_crown",
+    "thecrowns:cursed_crown"
+  ]
+}

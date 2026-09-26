@@ -1,0 +1,46 @@
+{
+  "type": "thecrowns:crown_builder",
+  "category": "equipment",
+  "required_tier": 4,
+  "pattern": [
+    "CRM",
+    "BGX",
+    "PFD"
+  ],
+  "key": {
+    "C": {
+      "item": "minecraft:chain_command_block"
+    },
+    "R": {
+      "item": "minecraft:repeating_command_block"
+    },
+    "M": {
+      "item": "minecraft:command_block"
+    },
+    "B": {
+      "item": "minecraft:bedrock"
+    },
+    "G": {
+      "item": "thecrowns:glitched_crown"
+    },
+    "X": {
+      "item": "minecraft:barrier"
+    },
+    "P": {
+      "item": "minecraft:potion"
+    },
+    "F": {
+      "item": "minecraft:end_portal_frame"
+    },
+    "D": {
+      "item": "minecraft:spawner"
+    }
+  },
+  "potion_slots": {
+    "6": "minecraft:empty"
+  },
+  "require_advancement": "thecrowns:glitched_crown",
+  "result": {
+    "item": "thecrowns:unleashed_crown"
+  }
+}

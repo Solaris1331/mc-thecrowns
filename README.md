@@ -12,9 +12,11 @@ Each target is an independent platform project under `platforms/`. Shared behavi
 
 ## Current status
 
-`platforms/forge-1.20.1` contains the `thecrowns` 1.0.0-beta.1 baseline. NeoForge targets will be added after this Forge baseline is verified.
+`platforms/forge-1.20.1` is the **1.0.4** baseline. Java 21 NeoForge ports are developed in `platforms/neoforge-1.21` and `platforms/neoforge-1.21.1` from that baseline.
 
 The former `glitchedcrown` Forge 1.20.1 1.5.3 source and beta history are preserved in `docs/legacy/forge-1.20.1/` and in Git tag `forge-1.20.1-1.5.3`.
+
+The reproducible 1.0.4 artifacts and a Korean current-state brief for reviews and general-chat context are kept in [`releases/1.0.4/`](releases/1.0.4/). The source remains under `platforms/`.
 
 ## Build
 

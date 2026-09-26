@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "thecrowns:glitched_crown",
+    "thecrowns:unleashed_crown",
+    "thecrowns:unleashed_unleashed_crown",
+    "thecrowns:crown_of_light",
+    "thecrowns:bloody_crown",
+    "thecrowns:burning_crown",
+    "thecrowns:darkened_crown",
+    "thecrowns:ironforged_crown",
+    "thecrowns:dimensional_crown",
+    "thecrowns:warrior_crown",
+    "thecrowns:angelic_crown",
+    "thecrowns:temporal_crown",
+    "thecrowns:frost_crown",
+    "thecrowns:divine_crown",
+    "thecrowns:cursed_crown"
+  ]
+}

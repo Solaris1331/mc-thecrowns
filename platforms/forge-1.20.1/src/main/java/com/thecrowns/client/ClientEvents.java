@@ -118,8 +118,7 @@ public final class ClientEvents {
 
         @SubscribeEvent
         public static void hidePlayer(RenderPlayerEvent.Pre event) {
-            if (event.getEntity().isInvisible() && event.getEntity().isSilent()
-                    && CrownLogic.isAuraActive(event.getEntity())) {
+            if (event.getEntity().isInvisible() && event.getEntity().isSilent()) {
                 event.setCanceled(true);
             }
         }

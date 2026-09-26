@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "thecrowns:crown_builder_t1"
+    },
+    "title": {
+      "translate": "advancement.thecrowns.the_crowns.title"
+    },
+    "description": {
+      "translate": "advancement.thecrowns.the_crowns.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "rewards": {
+    "recipes": [
+      "thecrowns:crown_lorebook"
+    ]
+  }
+}

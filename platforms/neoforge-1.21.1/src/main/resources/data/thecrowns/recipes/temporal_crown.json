@@ -1,0 +1,13 @@
+{
+  "type": "thecrowns:crown_builder",
+  "category": "equipment",
+  "required_tier": 3,
+  "pattern": ["ERE", "SNS", "ERE"],
+  "key": {
+    "E": {"item": "minecraft:echo_shard"},
+    "R": {"item": "minecraft:redstone_block"},
+    "S": {"item": "thecrowns:spacetime_stabilizer"},
+    "N": {"item": "minecraft:netherite_ingot"}
+  },
+  "result": {"item": "thecrowns:temporal_crown"}
+}

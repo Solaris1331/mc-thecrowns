@@ -55,10 +55,10 @@ public final class NewCrownLogic {
     public static final int BLOODY_MAX_STACKS = 40;
     public static final int IRONFORGED_COOLDOWN_TICKS = 120 * 20;
     public static final int DARKENED_DODGE_COOLDOWN_TICKS = 8 * 20;
-    public static final int DIMENSIONAL_CHARGE_TICKS = 10 * 20;
-    public static final int BURNING_REFLECT_COOLDOWN_TICKS = 20;
-    public static final int BLOODY_COOLDOWN_TICKS = 30 * 20;
-    public static final int BLOODY_MELEE_HEAL_COOLDOWN_TICKS = 10;
+    public static final int DIMENSIONAL_CHARGE_TICKS = 12 * 20;
+    public static final int BURNING_REFLECT_COOLDOWN_TICKS = 30;
+    public static final int BLOODY_COOLDOWN_TICKS = 40 * 20;
+    public static final int BLOODY_MELEE_HEAL_COOLDOWN_TICKS = 20;
     public static final int WARRIOR_DUEL_DURATION_TICKS = 15 * 20;
     public static final int WARRIOR_DUEL_COOLDOWN_TICKS = 120 * 20;
     public static final int ANGELIC_GUARD_COOLDOWN_TICKS = 600 * 20;
@@ -79,6 +79,8 @@ public final class NewCrownLogic {
     private static final String NBT_IRONFORGED_GOLEM_UUID = "thecrowns_ironforged_golem_uuid";
     private static final String NBT_DIMENSIONAL_RESCUE_FALL = "thecrowns_dimensional_rescue_fall";
     private static final String NBT_DIMENSIONAL_RESCUE_AT = "thecrowns_dimensional_rescue_at";
+    private static final String NBT_LIGHT_GRACE_UNTIL = "thecrowns_light_grace_until";
+    private static final String NBT_LIGHT_DISABLED = "thecrowns_light_disabled";
     private static final String NBT_WARRIOR_READY = "thecrowns_warrior_ready";
     private static final String NBT_WARRIOR_DUEL_UNTIL = "thecrowns_warrior_duel_until";
     private static final String NBT_WARRIOR_TARGET = "thecrowns_warrior_target";
@@ -163,6 +165,41 @@ public final class NewCrownLogic {
         return isWearingCrownOfLight(entity) || GlitchedFusionLogic.has(entity, ModItems.CROWN_OF_LIGHT.get());
     }
 
+    private static void tickLightGrace(ServerPlayer player, long now) {
+        CompoundTag data = player.getPersistentData();
+        if (!hasLightPower(player)) {
+            data.remove(NBT_LIGHT_GRACE_UNTIL);
+            data.remove(NBT_LIGHT_DISABLED);
+            return;
+        }
+        isLightEmpowered(player);
+    }
+
+    /** Light powers remain active for one second after health first reaches 50% or less. */
+    public static boolean isLightEmpowered(ServerPlayer player) {
+        if (player == null || !hasLightPower(player) || player.getMaxHealth() <= 0.0F) return false;
+        CompoundTag data = player.getPersistentData();
+        long now = player.level().getGameTime();
+        if (player.getHealth() > player.getMaxHealth() * 0.5F) {
+            data.remove(NBT_LIGHT_GRACE_UNTIL);
+            data.remove(NBT_LIGHT_DISABLED);
+            return true;
+        }
+        if (data.getBoolean(NBT_LIGHT_DISABLED)) return false;
+        if (!data.contains(NBT_LIGHT_GRACE_UNTIL)) {
+            data.putLong(NBT_LIGHT_GRACE_UNTIL, now + 20L);
+            return true;
+        }
+        if (now < data.getLong(NBT_LIGHT_GRACE_UNTIL)) return true;
+        data.putBoolean(NBT_LIGHT_DISABLED, true);
+        return false;
+    }
+
+    public static boolean isAngelicCreativeFlightActive(Player player) {
+        return player != null && player.getPersistentData().getLong(NBT_ANGELIC_FLIGHT_UNTIL)
+                > player.level().getGameTime();
+    }
+
     private static boolean hasDimensionalCombatPower(LivingEntity entity) {
         return isWearingDimensional(entity) || GlitchedFusionLogic.has(entity, ModItems.DIMENSIONAL_CROWN.get());
     }
@@ -205,6 +242,31 @@ public final class NewCrownLogic {
                 player.getPersistentData().getInt(NBT_BLOODY_STACKS)));
     }
 
+    public static void resetCooldowns(ServerPlayer player, String crown) {
+        if (player == null || crown == null) return;
+        CompoundTag data = player.getPersistentData();
+        switch (crown) {
+            case "bloody" -> {
+                data.remove(NBT_BLOODY_READY);
+                data.remove(NBT_BLOODY_MELEE_HEAL_READY);
+            }
+            case "burning" -> REFLECTION_COOLDOWNS.keySet().removeIf(key -> key.wearer().equals(player.getUUID()));
+            case "darkened" -> data.remove(NBT_DARKENED_DODGE_READY);
+            case "dimensional" -> data.remove(NBT_DIMENSIONAL_CHARGE_READY);
+            case "ironforged" -> data.remove(NBT_IRONFORGED_READY);
+            case "warrior" -> data.remove(NBT_WARRIOR_READY);
+            case "angelic" -> {
+                data.remove(NBT_ANGELIC_GUARD_READY);
+                data.remove(NBT_ANGELIC_FLIGHT_READY);
+                data.remove(NBT_ANGELIC_GUARD_FULL_HEALTH_TICKS);
+            }
+            default -> {
+                return;
+            }
+        }
+        syncTooltipState(player);
+    }
+
     public static long tooltipLong(ItemStack stack, String key, long fallback) {
         if (stack == null || stack.isEmpty() || stack.getTag() == null || !stack.getTag().contains(key)) return fallback;
         return stack.getTag().getLong(key);
@@ -217,6 +279,7 @@ public final class NewCrownLogic {
 
     public static void tickPlayer(ServerPlayer player) {
         long now = player.level().getGameTime();
+        tickLightGrace(player, now);
         syncAttributes(player);
 
         if (isWearingBurning(player)) {
@@ -234,7 +297,7 @@ public final class NewCrownLogic {
             data.putLong(NBT_BLOODY_LAST_WORN, now);
             long lastDamage = data.getLong(NBT_BLOODY_LAST_DAMAGE);
             if (now - lastDamage >= 60L && now % 20L == 0L && player.getHealth() < player.getMaxHealth()) {
-                player.heal(1.0F);
+                player.heal(2.0F);
             }
         }
         boolean dimensionalCombat = hasDimensionalCombatPower(player);
@@ -248,7 +311,7 @@ public final class NewCrownLogic {
         if (isWearingDimensional(player)) {
             CompoundTag data = player.getPersistentData();
 
-            if (player.getY() < -200.0D) {
+            if (player.getY() < -500.0D) {
                 int max = player.level().getMaxBuildHeight();
                 double rescueY = max <= 300 ? Math.max(player.level().getMinBuildHeight() + 2.0D, max - 2.0D) : 300.0D;
                 player.teleportTo(player.getX(), rescueY, player.getZ());
@@ -259,11 +322,9 @@ public final class NewCrownLogic {
                 data.putLong(NBT_DIMENSIONAL_RESCUE_AT, now);
             }
             if (data.getBoolean(NBT_DIMENSIONAL_RESCUE_FALL)) {
-                // Keep fall distance suppressed for the entire post-rescue descent.  Teleportation can
-                // preserve an old onGround=true state for a tick, so never clear the guard immediately.
                 player.fallDistance = 0.0F;
                 long rescueAt = data.getLong(NBT_DIMENSIONAL_RESCUE_AT);
-                if (player.onGround() && now - rescueAt >= 20L) {
+                if (now - rescueAt >= 30L * 20L) {
                     data.remove(NBT_DIMENSIONAL_RESCUE_FALL);
                     data.remove(NBT_DIMENSIONAL_RESCUE_AT);
                 }
@@ -295,7 +356,7 @@ public final class NewCrownLogic {
         setModifier(player, Attributes.MAX_HEALTH, LIGHT_HEALTH, "crown_of_light_health", light ? 20.0D : 0.0D, AttributeModifier.Operation.ADDITION);
         setModifier(player, Attributes.ARMOR, LIGHT_ARMOR, "crown_of_light_armor", light ? 15.0D : 0.0D, AttributeModifier.Operation.ADDITION);
         setModifier(player, Attributes.ARMOR_TOUGHNESS, LIGHT_TOUGHNESS, "crown_of_light_toughness", light ? 7.0D : 0.0D, AttributeModifier.Operation.ADDITION);
-        boolean lightEmpowered = light && player.getMaxHealth() > 0.0F && player.getHealth() >= player.getMaxHealth() * 0.5F;
+        boolean lightEmpowered = isLightEmpowered(player);
         setModifier(player, Attributes.MOVEMENT_SPEED, LIGHT_SPEED, "crown_of_light_speed", lightEmpowered ? 0.20D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         setModifier(player, Attributes.MAX_HEALTH, BLOODY_HEALTH_FLAT, "bloody_crown_health_flat", bloody ? 40.0D : 0.0D, AttributeModifier.Operation.ADDITION);
@@ -307,21 +368,21 @@ public final class NewCrownLogic {
         setModifier(player, Attributes.ARMOR, BURNING_ARMOR, "burning_crown_armor", burning ? 10.0D : 0.0D, AttributeModifier.Operation.ADDITION);
         setModifier(player, Attributes.ARMOR_TOUGHNESS, BURNING_TOUGHNESS, "burning_crown_toughness", burning ? 5.0D : 0.0D, AttributeModifier.Operation.ADDITION);
 
-        setModifier(player, Attributes.ARMOR, DARKENED_ARMOR, "darkened_crown_armor", darkened ? 10.0D : 0.0D, AttributeModifier.Operation.ADDITION);
-        setModifier(player, Attributes.MOVEMENT_SPEED, DARKENED_SPEED, "darkened_crown_speed", darkened ? 0.10D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        setModifier(player, Attributes.ARMOR, DARKENED_ARMOR, "darkened_crown_armor", 0.0D, AttributeModifier.Operation.ADDITION);
+        setModifier(player, Attributes.MOVEMENT_SPEED, DARKENED_SPEED, "darkened_crown_speed", darkened ? 0.12D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        setModifier(player, Attributes.ARMOR, IRONFORGED_ARMOR, "ironforged_crown_armor", ironforged ? 30.0D : 0.0D, AttributeModifier.Operation.ADDITION);
-        setModifier(player, Attributes.ARMOR_TOUGHNESS, IRONFORGED_TOUGHNESS, "ironforged_crown_toughness", ironforged ? 30.0D : 0.0D, AttributeModifier.Operation.ADDITION);
-        setModifier(player, Attributes.MOVEMENT_SPEED, IRONFORGED_SPEED, "ironforged_crown_speed", ironforged ? -0.10D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        setModifier(player, Attributes.ARMOR, IRONFORGED_ARMOR, "ironforged_crown_armor", ironforged ? 25.0D : 0.0D, AttributeModifier.Operation.ADDITION);
+        setModifier(player, Attributes.ARMOR_TOUGHNESS, IRONFORGED_TOUGHNESS, "ironforged_crown_toughness", ironforged ? 15.0D : 0.0D, AttributeModifier.Operation.ADDITION);
+        setModifier(player, Attributes.MOVEMENT_SPEED, IRONFORGED_SPEED, "ironforged_crown_speed", ironforged ? -0.15D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         setModifier(player, Attributes.MOVEMENT_SPEED, DIMENSIONAL_SPEED, "dimensional_crown_speed", dimensional ? 0.30D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
         setModifier(player, Attributes.ATTACK_DAMAGE, DIMENSIONAL_DAMAGE, "dimensional_crown_damage", dimensional ? 10.0D : 0.0D, AttributeModifier.Operation.ADDITION);
         setModifier(player, Attributes.ATTACK_SPEED, DIMENSIONAL_ATTACK_SPEED, "dimensional_crown_attack_speed", dimensional ? 0.20D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        setModifier(player, Attributes.MAX_HEALTH, WARRIOR_HEALTH, "warrior_crown_health", warrior ? 20.0D : 0.0D, AttributeModifier.Operation.ADDITION);
-        setModifier(player, Attributes.ATTACK_DAMAGE, WARRIOR_DAMAGE, "warrior_crown_damage", warrior ? 20.0D : 0.0D, AttributeModifier.Operation.ADDITION);
-        setModifier(player, Attributes.ARMOR, WARRIOR_ARMOR, "warrior_crown_armor", warrior ? -0.20D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
-        setModifier(player, Attributes.ARMOR_TOUGHNESS, WARRIOR_TOUGHNESS, "warrior_crown_toughness", warrior ? -0.20D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        setModifier(player, Attributes.MAX_HEALTH, WARRIOR_HEALTH, "warrior_crown_health", warrior ? 25.0D : 0.0D, AttributeModifier.Operation.ADDITION);
+        setModifier(player, Attributes.ATTACK_DAMAGE, WARRIOR_DAMAGE, "warrior_crown_damage", warrior ? 12.0D : 0.0D, AttributeModifier.Operation.ADDITION);
+        setModifier(player, Attributes.ARMOR, WARRIOR_ARMOR, "warrior_crown_armor", warrior ? -0.30D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        setModifier(player, Attributes.ARMOR_TOUGHNESS, WARRIOR_TOUGHNESS, "warrior_crown_toughness", warrior ? -0.30D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
         setModifier(player, Attributes.ATTACK_SPEED, WARRIOR_DUEL_ATTACK_SPEED, "warrior_duel_attack_speed",
                 warrior && isWarriorDuelActive(player) ? 0.25D : 0.0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
@@ -349,17 +410,24 @@ public final class NewCrownLogic {
 
     private static void syncTooltipStack(ItemStack stack, CompoundTag data) {
         if (stack == null || stack.isEmpty()) return;
-        CompoundTag tag = stack.getOrCreateTag();
         if (stack.is(ModItems.BLOODY_CROWN.get())) {
+            CompoundTag tag = stack.getOrCreateTag();
             tag.putInt(TAG_BLOODY_STACKS, Math.max(0, Math.min(BLOODY_MAX_STACKS, data.getInt(NBT_BLOODY_STACKS))));
             tag.putLong(TAG_BLOODY_READY_AT, data.getLong(NBT_BLOODY_READY));
         } else if (stack.is(ModItems.IRONFORGED_CROWN.get())) {
+            CompoundTag tag = stack.getOrCreateTag();
             tag.putLong(TAG_IRONFORGED_READY_AT, data.getLong(NBT_IRONFORGED_READY));
         } else if (stack.is(ModItems.WARRIOR_CROWN.get())) {
+            CompoundTag tag = stack.getOrCreateTag();
             tag.putLong(TAG_WARRIOR_READY_AT, data.getLong(NBT_WARRIOR_READY));
         } else if (stack.is(ModItems.ANGELIC_CROWN.get())) {
+            CompoundTag tag = stack.getOrCreateTag();
             tag.putLong(TAG_ANGELIC_GUARD_READY_AT, data.getLong(NBT_ANGELIC_GUARD_READY));
             tag.putLong(TAG_ANGELIC_FLIGHT_READY_AT, data.getLong(NBT_ANGELIC_FLIGHT_READY));
+        } else if (stack.getTag() != null && stack.getTag().isEmpty()) {
+            // Older tooltip synchronisation wrote an inert empty tag to every inventory item.
+            // Remove it so existing stacks can merge with newly acquired items again.
+            stack.setTag(null);
         }
     }
 
@@ -597,6 +665,8 @@ public final class NewCrownLogic {
         data.putLong(NBT_ANGELIC_FLIGHT_UNTIL, now + ANGELIC_FLIGHT_DURATION_TICKS);
         data.putBoolean(NBT_ANGELIC_HAD_MAYFLY, player.getAbilities().mayfly);
         data.putBoolean(NBT_ANGELIC_GRANTED_FLIGHT, true);
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (player.isFallFlying() && !chest.canElytraFly(player)) player.stopFallFlying();
         player.getAbilities().mayfly = true;
         player.onUpdateAbilities();
         player.displayClientMessage(Component.translatable("message.thecrowns.angelic_flight_activated"), true);
@@ -623,6 +693,8 @@ public final class NewCrownLogic {
 
     public static boolean isImmuneToEffect(LivingEntity entity, MobEffect effect) {
         if (entity == null || effect == null) return false;
+        if (AdvancedCrownLogic.isWearingFrost(entity)
+                && (effect == MobEffects.MOVEMENT_SLOWDOWN || effect == MobEffects.DIG_SLOWDOWN)) return true;
         if (isWearingBurning(entity) && (effect == MobEffects.POISON || effect == MobEffects.WITHER
                 || effect == MobEffects.MOVEMENT_SLOWDOWN || effect == MobEffects.CONFUSION)) return true;
         return isWearingDarkened(entity) && (effect == MobEffects.DARKNESS || effect == MobEffects.BLINDNESS);
@@ -673,7 +745,7 @@ public final class NewCrownLogic {
         float result = amount;
 
         if (target instanceof ServerPlayer victim) {
-            if (hasLightPower(victim) && victim.getHealth() >= victim.getMaxHealth() * 0.5F) {
+            if (isLightEmpowered(victim)) {
                 result = safeMultiply(result, 0.65D);
             }
             if (isWearingDarkened(victim) || GlitchedFusionLogic.has(victim, ModItems.DARKENED_CROWN.get())) {
@@ -697,7 +769,7 @@ public final class NewCrownLogic {
         // before any Crown multiplier is applied. This cap is technical, not a balance limit.
         if (CrownLogic.isWearingUnleashed(attacker)) result = sanitizeCrownDamage(result);
 
-        if (hasLightPower(attacker) && attacker.getHealth() >= attacker.getMaxHealth() * 0.5F) {
+        if (isLightEmpowered(attacker)) {
             result = safeMultiply(result, 1.50D);
         }
         if (isWearingDarkened(attacker) || GlitchedFusionLogic.has(attacker, ModItems.DARKENED_CROWN.get())) {
@@ -767,7 +839,7 @@ public final class NewCrownLogic {
             CompoundTag data = attacker.getPersistentData();
             if (now >= data.getLong(NBT_BLOODY_MELEE_HEAL_READY)) {
                 data.putLong(NBT_BLOODY_MELEE_HEAL_READY, now + BLOODY_MELEE_HEAL_COOLDOWN_TICKS);
-                attacker.heal(attacker.getMaxHealth() * 0.02F);
+                attacker.heal(attacker.getMaxHealth() * 0.015F);
             }
         }
     }
@@ -785,7 +857,7 @@ public final class NewCrownLogic {
 
         double armor = wearer.getAttributeValue(Attributes.ARMOR);
         double toughness = wearer.getAttributeValue(Attributes.ARMOR_TOUGHNESS);
-        float reflectedDamage = (float) (4.0D + armor * 0.5D);
+        float reflectedDamage = (float) (3.0D + armor * 0.4D);
         int fireTicks = Math.max(0, (int) Math.round((4.0D + toughness * 0.5D) * 20.0D));
 
         REFLECTION_GUARD.set(true);
@@ -846,7 +918,8 @@ public final class NewCrownLogic {
 
     public static boolean shouldBlockWarriorOutgoingDamage(DamageSource source) {
         ServerPlayer attacker = damageOwner(source);
-        return attacker != null && isWearingWarrior(attacker) && !isDirectMeleeDamage(attacker, source);
+        return attacker != null && isWearingWarrior(attacker) && !CrownLogic.isWearing(attacker)
+                && !isDirectMeleeDamage(attacker, source);
     }
 
     private static boolean isValidBloodyVictim(ServerPlayer attacker, LivingEntity victim) {
@@ -955,9 +1028,9 @@ public final class NewCrownLogic {
         golem.setPlayerCreated(true);
         golem.getPersistentData().putUUID(NBT_IRONFORGED_OWNER, player.getUUID());
 
-        addToBase(golem, Attributes.MAX_HEALTH, player.getAttributeValue(Attributes.MAX_HEALTH));
-        addToBase(golem, Attributes.ARMOR, player.getAttributeValue(Attributes.ARMOR));
-        addToBase(golem, Attributes.ARMOR_TOUGHNESS, player.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
+        addToBase(golem, Attributes.MAX_HEALTH, player.getAttributeValue(Attributes.MAX_HEALTH) * 0.5D);
+        addToBase(golem, Attributes.ARMOR, player.getAttributeValue(Attributes.ARMOR) * 0.5D);
+        addToBase(golem, Attributes.ARMOR_TOUGHNESS, player.getAttributeValue(Attributes.ARMOR_TOUGHNESS) * 0.5D);
         addToBase(golem, Attributes.ATTACK_DAMAGE,
                 golem.getAttributeValue(Attributes.ARMOR) * 0.30D
                         + golem.getAttributeValue(Attributes.ARMOR_TOUGHNESS) * 0.60D);

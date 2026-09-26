@@ -1,5 +1,6 @@
 package com.thecrowns;
 
+import com.thecrowns.compat.CrownCurios;
 import com.thecrowns.network.ModNetworking;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public final class TheCrownsMod {
         ModMenus.MENUS.register(modBus);
         ModRecipes.TYPES.register(modBus);
         ModRecipes.SERIALIZERS.register(modBus);
+        modBus.addListener(CrownCurios::enqueueImc);
         ModNetworking.register();
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, CrownServerConfig.SPEC, "thecrowns-server.toml");
     }

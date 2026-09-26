@@ -4,7 +4,7 @@
 
 - Mod name: The Crowns
 - Mod ID: `thecrowns`
-- Current line: `1.0.0-beta.1`
+- Current line: `1.0.4`
 - Supported targets: Forge 1.20.1, NeoForge 1.21, NeoForge 1.21.1
 - Release JARs begin with 1.0.0. Do not publish legacy 1.5.3 binaries from this repository.
 

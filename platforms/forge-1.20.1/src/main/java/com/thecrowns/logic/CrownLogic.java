@@ -108,6 +108,7 @@ public final class CrownLogic {
     private static final String NBT_NERFED_USE_LASER_COOLDOWN = "thecrowns_nerfed_use_laser_cooldown";
     private static final String NBT_GLITCHED_GATE_WARNING_SHOWN = "thecrowns_gate_warning_shown";
     private static final String NBT_FATE_BIND_UNTIL = "thecrowns_fate_bind_until";
+    private static final String NBT_GLITCHED_RAY_REMOVED_FRACTION = "thecrowns_glitched_ray_removed_fraction";
     private static final String NBT_UNLEASHED_FLIGHT_LOCK_INIT = "thecrowns_unleashed_flight_lock_init";
     private static final String NBT_UNLEASHED_FLIGHT_EXPECTED = "thecrowns_unleashed_flight_expected";
     private static final String ITEM_NBT_BARRIER_CHARGES = "GlitchedBarrierCharges";
@@ -171,7 +172,9 @@ public final class CrownLogic {
     }
     public static int glitchedAdvancementRequiredPoints() { return CrownAdvancementGate.requiredPoints(); }
     public static int lootingBonus(LivingEntity entity) {
-        return isWearingUnleashedUnleashed(entity) ? 7 : CrownServerConfig.BONUS_LOOTING.get();
+        if (isWearingUnleashedUnleashed(entity)) return 14;
+        if (isWearingConfigurableUnleashed(entity)) return CrownServerConfig.UNLEASHED_BONUS_LOOTING.get();
+        return CrownServerConfig.BONUS_LOOTING.get();
     }
 
     public static boolean isWearing(LivingEntity entity) {
@@ -358,6 +361,7 @@ public final class CrownLogic {
         // Run on both logical sides. Configurable Unleashed/Glitched can disable
         // this; Unleashed Unleashed always keeps the full lock.
         if (!(entity instanceof Player player)) return false;
+        if (ShadowAbyssalLogic.hasShadowHook(player)) return true;
         if (isWearingUnleashedUnleashed(player)) return true;
         if (isWearingConfigurableUnleashed(player)) return CrownServerConfig.UNLEASHED_MOVEMENT_IMMUNITY.get();
         return isNerfedCrownActive(player) && CrownServerConfig.GLITCHED_MOVEMENT_IMMUNITY.get();
@@ -547,7 +551,20 @@ public final class CrownLogic {
         return clamped;
     }
 
-    /** Copy the /gt switches across an actual player respawn. */
+    public static void resetGlitchedCooldowns(ServerPlayer player) {
+        if (player == null) return;
+        CompoundTag data = player.getPersistentData();
+        data.remove(NBT_NERFED_REVIVE_READY_AT);
+        data.remove(NBT_NERFED_LASER_READY_AT);
+        ItemStack crown = getWornGlitchedCrown(player);
+        if (!crown.isEmpty()) {
+            crown.getOrCreateTag().remove(ITEM_NBT_REVIVE_READY_AT);
+            crown.getOrCreateTag().remove(ITEM_NBT_LASER_READY_AT);
+        }
+        syncNerfedRuntimeToItem(player);
+    }
+
+    /** Copy the /crowns switches across an actual player respawn. */
     public static void copyNerfedPlayerSettings(Player original, Player replacement) {
         if (original == null || replacement == null) return;
         CompoundTag src = original.getPersistentData();
@@ -734,7 +751,7 @@ public final class CrownLogic {
 
         int charges = getNerfedBarrierCharges(crown);
 
-        // /gt shieldenable false disables the entire shield mechanic, including
+        // /crowns shieldenable false disables the entire shield mechanic, including
         // passive recharge.  Re-enabling starts a fresh ten-second interval.
         if (!isNerfedShieldEnabled(player)) {
             tag.putInt(ITEM_NBT_BARRIER_CHARGES, charges);
@@ -977,13 +994,21 @@ public final class CrownLogic {
 
     private static void syncAttributes(ServerPlayer player) {
         boolean fixed = isWearingUnleashedUnleashed(player);
-        apply(player, Attributes.MAX_HEALTH, MOD_HEALTH, "bonus_health", fixed ? 80.0D : CrownServerConfig.BONUS_MAX_HEALTH.get());
-        apply(player, Attributes.ARMOR, MOD_ARMOR, "bonus_armor", fixed ? 40.0D : CrownServerConfig.BONUS_ARMOR.get());
-        apply(player, Attributes.ARMOR_TOUGHNESS, MOD_TOUGHNESS, "bonus_toughness", fixed ? 40.0D : CrownServerConfig.BONUS_TOUGHNESS.get());
-        apply(player, Attributes.LUCK, MOD_LUCK, "bonus_luck", fixed ? 7.0D : CrownServerConfig.BONUS_LUCK.get());
-        apply(player, Attributes.ATTACK_DAMAGE, MOD_DAMAGE, "bonus_damage", fixed ? 40.0D : CrownServerConfig.BONUS_ATTACK_DAMAGE.get());
-        apply(player, Attributes.KNOCKBACK_RESISTANCE, MOD_KB, "knockback_immunity", fixed ? 1.0D : CrownServerConfig.BONUS_KNOCKBACK_RESISTANCE.get());
-        double reach = fixed ? 3.5D : CrownServerConfig.BONUS_INTERACTION_REACH.get();
+        boolean unleashed = isWearingConfigurableUnleashed(player);
+        apply(player, Attributes.MAX_HEALTH, MOD_HEALTH, "bonus_health", fixed ? 160.0D : unleashed
+                ? CrownServerConfig.UNLEASHED_BONUS_MAX_HEALTH.get() : CrownServerConfig.BONUS_MAX_HEALTH.get());
+        apply(player, Attributes.ARMOR, MOD_ARMOR, "bonus_armor", fixed ? 80.0D : unleashed
+                ? CrownServerConfig.UNLEASHED_BONUS_ARMOR.get() : CrownServerConfig.BONUS_ARMOR.get());
+        apply(player, Attributes.ARMOR_TOUGHNESS, MOD_TOUGHNESS, "bonus_toughness", fixed ? 80.0D : unleashed
+                ? CrownServerConfig.UNLEASHED_BONUS_TOUGHNESS.get() : CrownServerConfig.BONUS_TOUGHNESS.get());
+        apply(player, Attributes.LUCK, MOD_LUCK, "bonus_luck", fixed ? 14.0D : unleashed
+                ? CrownServerConfig.UNLEASHED_BONUS_LUCK.get() : CrownServerConfig.BONUS_LUCK.get());
+        apply(player, Attributes.ATTACK_DAMAGE, MOD_DAMAGE, "bonus_damage", fixed ? 80.0D : unleashed
+                ? CrownServerConfig.UNLEASHED_BONUS_ATTACK_DAMAGE.get() : CrownServerConfig.BONUS_ATTACK_DAMAGE.get());
+        apply(player, Attributes.KNOCKBACK_RESISTANCE, MOD_KB, "knockback_immunity", fixed ? 2.0D : unleashed
+                ? CrownServerConfig.UNLEASHED_BONUS_KNOCKBACK_RESISTANCE.get() : CrownServerConfig.BONUS_KNOCKBACK_RESISTANCE.get());
+        double reach = fixed ? 7.0D : unleashed ? CrownServerConfig.UNLEASHED_BONUS_INTERACTION_REACH.get()
+                : CrownServerConfig.BONUS_INTERACTION_REACH.get();
         apply(player, ForgeMod.ENTITY_REACH.get(), MOD_ENTITY_REACH, "entity_reach", reach);
         apply(player, ForgeMod.BLOCK_REACH.get(), MOD_BLOCK_REACH, "block_reach", reach);
 
@@ -1274,6 +1299,39 @@ public final class CrownLogic {
         target.getEntityData().set(LivingEntityHealthAccessor.thecrowns$getDataHealth(), clamped);
     }
 
+    /** Records cumulative non-player body-health loss caused by the Glitched disassembly ray. */
+    private static void recordGlitchedRayHealthLoss(LivingEntity target, float removedHealth) {
+        if (target == null || target instanceof Player || removedHealth <= 0.0F || target.getMaxHealth() <= 0.0F) return;
+        CompoundTag data = target.getPersistentData();
+        double removedFraction = removedHealth / target.getMaxHealth();
+        double total = Math.min(1.0D, Math.max(0.0D, data.getDouble(NBT_GLITCHED_RAY_REMOVED_FRACTION))
+                + Math.max(0.0D, removedFraction));
+        data.putDouble(NBT_GLITCHED_RAY_REMOVED_FRACTION, total);
+        enforceGlitchedRayHealingCap(target);
+    }
+
+    private static float glitchedRayHealingCeiling(LivingEntity entity) {
+        if (entity == null || entity instanceof Player) return Float.POSITIVE_INFINITY;
+        double removed = Math.min(1.0D, Math.max(0.0D,
+                entity.getPersistentData().getDouble(NBT_GLITCHED_RAY_REMOVED_FRACTION)));
+        return (float) Math.max(0.0D, entity.getMaxHealth() * (1.0D - removed));
+    }
+
+    public static float clampSetHealth(LivingEntity entity, float requestedHealth) {
+        return Math.min(requestedHealth, glitchedRayHealingCeiling(entity));
+    }
+
+    public static float clampHealingAmount(LivingEntity entity, float amount) {
+        if (entity == null || amount <= 0.0F || entity instanceof Player) return amount;
+        return Math.max(0.0F, Math.min(amount, glitchedRayHealingCeiling(entity) - rawHealth(entity)));
+    }
+
+    public static void enforceGlitchedRayHealingCap(LivingEntity entity) {
+        if (entity == null || entity instanceof Player) return;
+        float ceiling = glitchedRayHealingCeiling(entity);
+        if (rawHealth(entity) > ceiling) rawSetHealth(entity, ceiling);
+    }
+
     /**
      * Applies the LivingHurt-resolved amount directly to body health for damage
      * caused by an Unleashed Crown wearer. The call site deliberately runs after
@@ -1466,6 +1524,7 @@ public final class CrownLogic {
         // Bypass VP Cruel's setHealth() interception and apply loss to body HP directly.
         float applied = Math.max(0.0F, rawHealth(target) - next);
         rawSetHealth(target, next);
+        recordGlitchedRayHealthLoss(target, applied);
         if (applied > 0.0F) {
             AdvancedCrownLogic.onDamageResolved(target, shooter.damageSources().playerAttack(shooter), applied);
         }
@@ -1481,7 +1540,6 @@ public final class CrownLogic {
                     // while the target is still alive; a confirmed death may leave
                     // behind a legitimate corpse entity that must not be discarded.
                     target.kill();
-                    if (!target.isRemoved() && target.isAlive()) target.discard();
                 }
             } finally {
                 FORCED_DEATHS.remove(target.getUUID());
@@ -1583,7 +1641,6 @@ public final class CrownLogic {
                 // If kill()/a modded death hook has already established a dead state,
                 // stop there instead of erasing a corpse with discard().
                 target.kill();
-                if (!target.isRemoved() && target.isAlive()) target.discard();
             }
         } finally {
             FORCED_DEATHS.remove(target.getUUID());

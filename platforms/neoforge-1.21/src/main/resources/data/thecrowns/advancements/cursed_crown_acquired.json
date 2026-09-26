@@ -1,0 +1,14 @@
+{
+  "parent": "thecrowns:the_crowns",
+  "display": {
+    "icon": { "item": "thecrowns:cursed_crown" },
+    "title": { "translate": "advancement.thecrowns.cursed_crown_acquired.title" },
+    "description": { "translate": "advancement.thecrowns.cursed_crown_acquired.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": { "acquired": { "trigger": "minecraft:impossible" } },
+  "requirements": [["acquired"]]
+}

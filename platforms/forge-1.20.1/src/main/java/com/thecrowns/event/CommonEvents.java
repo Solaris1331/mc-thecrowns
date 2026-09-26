@@ -4,6 +4,7 @@ import com.thecrowns.TheCrownsMod;
 import com.thecrowns.command.GTCommand;
 import com.thecrowns.command.CrownCommand;
 import com.thecrowns.api.event.CrownAbilityTargetEvent;
+import com.thecrowns.compat.CrownCurios;
 import com.thecrowns.logic.CrownIntegrity;
 import com.thecrowns.logic.CrownAdvancementGate;
 import com.thecrowns.logic.CrownAdvancements;
@@ -11,6 +12,7 @@ import com.thecrowns.logic.CrownLogic;
 import com.thecrowns.logic.NewCrownLogic;
 import com.thecrowns.logic.AdvancedCrownLogic;
 import com.thecrowns.logic.GlitchedFusionLogic;
+import com.thecrowns.logic.ShadowAbyssalLogic;
 import com.thecrowns.registry.ModItems;
 import com.thecrowns.item.StandardCrownItem;
 import net.minecraft.ChatFormatting;
@@ -44,11 +46,11 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -88,13 +90,16 @@ public final class CommonEvents {
             CrownLogic.tickPlayer(player);
             NewCrownLogic.tickPlayer(player);
             AdvancedCrownLogic.tickPlayer(player);
+            ShadowAbyssalLogic.tickPlayer(player);
             GlitchedFusionLogic.tickPlayer(player);
             CrownAdvancements.tickSpecial(player);
+            CrownCurios.syncSlotCount(player);
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onAttack(LivingAttackEvent event) {
+        ShadowAbyssalLogic.noteAttack(event.getEntity(), event.getSource());
         if (AdvancedCrownLogic.shouldCancelFrozenAttack(event.getSource())
                 || AdvancedCrownLogic.shouldCancelTimeStoppedAttack(event.getSource())
                 || NewCrownLogic.shouldBlockWarriorOutgoingDamage(event.getSource())) {
@@ -171,6 +176,7 @@ public final class CommonEvents {
         if (event.getAmount() <= 0.0F) return;
         float modified = NewCrownLogic.modifyFinalDamage(event.getEntity(), event.getSource(), event.getAmount());
         modified = AdvancedCrownLogic.applyCursedOutgoingPenalty(event.getSource(), modified);
+        modified = ShadowAbyssalLogic.applyAmbush(event.getSource(), modified);
         if (event.getEntity() instanceof ServerPlayer player && NewCrownLogic.tryAngelicLethalGuard(player, modified)) {
             event.setAmount(0.0F);
             return;
@@ -180,18 +186,24 @@ public final class CommonEvents {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamageResolved(LivingDamageEvent event) {
-        if (event.getAmount() <= 0.0F) return;
+        // This is intentionally event-based rather than a LivingEntity Redirect. It runs after
+        // other final-damage listeners, preserving the Iron Guardian cap without monopolizing
+        // ForgeHooks.onLivingDamage and breaking other mods' Mixins.
+        float resolved = NewCrownLogic.capIronforgedFinalDamage(event.getEntity(), event.getAmount());
+        event.setAmount(resolved);
+        if (resolved <= 0.0F) return;
         ServerPlayer attacker = CrownLogic.crownDamageOwner(event.getSource());
         if (attacker != null && CrownLogic.isFateActive(attacker)
                 && CrownLogic.canAffectCrownTarget(attacker, event.getEntity(), CrownAbilityTargetEvent.Ability.FATE_BIND)) {
             CrownLogic.applyFateBind(event.getEntity());
         }
-        NewCrownLogic.afterDamageResolved(event.getEntity(), event.getSource(), event.getAmount());
-        AdvancedCrownLogic.onDamageResolved(event.getEntity(), event.getSource(), event.getAmount());
+        NewCrownLogic.afterDamageResolved(event.getEntity(), event.getSource(), resolved);
+        AdvancedCrownLogic.onDamageResolved(event.getEntity(), event.getSource(), resolved);
     }
 
     @SubscribeEvent
     public static void onLivingTick(LivingEvent.LivingTickEvent event) {
+        CrownLogic.enforceGlitchedRayHealingCap(event.getEntity());
         CrownLogic.tickFateBind(event.getEntity());
         NewCrownLogic.tickOwnedIronGolemEntity(event.getEntity());
         AdvancedCrownLogic.tickLiving(event.getEntity());
@@ -307,7 +319,8 @@ public final class CommonEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onKnockback(LivingKnockBackEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player && NewCrownLogic.shouldCancelWarriorKnockback(player)) {
+        if (event.getEntity() instanceof ServerPlayer player && (NewCrownLogic.shouldCancelWarriorKnockback(player)
+                || ShadowAbyssalLogic.hasShadowHook(player))) {
             event.setCanceled(true);
             return;
         }
@@ -334,6 +347,11 @@ public final class CommonEvents {
                 return;
             }
             if (NewCrownLogic.shouldBlockDimensionalAcquisition(mob, player)) {
+                event.setNewTarget(null);
+                mob.setTarget(null);
+                return;
+            }
+            if (ShadowAbyssalLogic.shouldBlockTarget(mob, player)) {
                 event.setNewTarget(null);
                 mob.setTarget(null);
                 return;
@@ -401,16 +419,13 @@ public final class CommonEvents {
     }
 
     @SubscribeEvent
-    public static void onExperienceDrop(LivingExperienceDropEvent event) {
-        double multiplier = AdvancedCrownLogic.cursedExperienceMultiplier(event.getAttackingPlayer());
-        if (Double.compare(multiplier, 1.0D) != 0) {
-            long configured = Math.min((long) Integer.MAX_VALUE,
-                    Math.round(event.getDroppedExperience() * multiplier));
-            event.setDroppedExperience((int) Math.max(0L, configured));
-        }
-        if (event.getEntity() instanceof ServerPlayer player && AdvancedCrownLogic.hasCursedPower(player)) {
-            event.setDroppedExperience(0);
-        }
+    public static void onExperienceGain(PlayerXpEvent.XpChange event) {
+        if (event.getAmount() <= 0) return;
+        double bonus = AdvancedCrownLogic.cursedExperienceBonusFraction(event.getEntity());
+        if (bonus <= 0.0D) return;
+        long adjusted = Math.min((long) Integer.MAX_VALUE,
+                Math.round(event.getAmount() * (1.0D + bonus)));
+        event.setAmount((int) adjusted);
     }
 
     @Mod.EventBusSubscriber(modid = TheCrownsMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)

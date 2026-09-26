@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IVI",
+    "ADA",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "V": {
+      "item": "minecraft:anvil"
+    },
+    "A": {
+      "item": "minecraft:amethyst_block"
+    },
+    "D": {
+      "item": "minecraft:diamond_block"
+    },
+    "C": {
+      "item": "minecraft:crafting_table"
+    }
+  },
+  "result": {
+    "item": "thecrowns:crown_builder_t1"
+  }
+}
