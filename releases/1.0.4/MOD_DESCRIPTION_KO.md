@@ -12,10 +12,12 @@ The Crowns(`thecrowns`)는 왕관 장비를 제작·장착하여 전투, 생존,
 
 | 대상 | 파일 | SHA-256 |
 | --- | --- | --- |
-| Minecraft 1.20.1 Forge | `thecrowns-forge-1.20.1-1.0.4.jar` | `5EAAF085131E7A4BDA3A7801F4209BF5E332BE3840C49B8CDD6B5D1800B42CB5` |
-| Minecraft 1.21.1 NeoForge | `thecrowns-neoforge-1.21.1-1.0.4.jar` | `F52CA1D339EB98A7F8897C903A7F8A434662D2EE7E89C602851475CEB4480334` |
+| Minecraft 1.20.1 Forge | `thecrowns-forge-1.20.1-1.0.4.jar` | `C5172DC59BA7C64545F08C019ED0BAB62495F545F7B392574B8649A3C78E84C2` |
+| Minecraft 1.21.1 NeoForge | `thecrowns-neoforge-1.21.1-1.0.4.jar` | `E095B5792CC6C5413B703F2FBF19469498D6915F1162CC33161391767FB56BD5` |
 
 두 JAR은 2026-09-26 워크스페이스 스냅샷에서 생성했다. NeoForge 1.21은 이식 작업용 경로만 있으며, 이 스냅샷에는 검증된 배포 JAR이 없다.
+
+이 배포물에는 기능 수치·범위·지속시간을 바꾸지 않는 서버 tick 최적화가 포함된다. 왕관 상태가 없는 LivingEntity는 고급 왕관 상태 처리를 건너뛰며, Time Warp·저주 왕관·암흑 왕관·Glitched 주변 효과의 반복 검색 비용을 줄였다.
 
 ## 1.0.4의 신규 왕관
 

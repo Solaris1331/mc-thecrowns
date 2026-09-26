@@ -703,8 +703,9 @@ public final class CrownLogic {
                 if (CrownServerConfig.GLITCHED_SHIELD.get()) tickNerfedBarrier(player);
                 if (player.tickCount % 5 == 0) {
                     double radius = glitchedNullificationRadius();
-                    if (CrownServerConfig.GLITCHED_NULLIFICATION_AURA.get()) stripNearbyHostileHurtResistance(player, radius);
-                    if (CrownServerConfig.GLITCHED_EXECUTION_AURA.get()) executeNearbyCriticalEntities(player, radius);
+                    boolean nullification = CrownServerConfig.GLITCHED_NULLIFICATION_AURA.get();
+                    boolean execution = CrownServerConfig.GLITCHED_EXECUTION_AURA.get();
+                    if (nullification || execution) tickNerfedAura(player, radius, nullification, execution);
                 }
                 if (hasNerfedReviveInvulnerability(player)) {
                     player.invulnerableTime = 0;
@@ -1160,16 +1161,35 @@ public final class CrownLogic {
      * hurt-resistance window. It deliberately does NOT clear an entity's
      * invulnerable flag and does not bypass Entity#isInvulnerableTo.
      */
-    private static void stripNearbyHostileHurtResistance(ServerPlayer wearer, double radius) {
-        if (!(wearer.level() instanceof ServerLevel level)) return;
+    private static void tickNerfedAura(ServerPlayer wearer, double radius, boolean nullification, boolean execution) {
+        if (!(wearer.level() instanceof ServerLevel level) || !isNerfedCrownActive(wearer)) return;
         AABB area = wearer.getBoundingBox().inflate(radius);
         double radiusSquared = radius * radius;
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area, entity ->
-                entity.isAlive() && entity != wearer && isHostile(entity)
-                        && entity.distanceToSqr(wearer) <= radiusSquared)) {
-            if (!canAffectCrownTarget(wearer, target, CrownAbilityTargetEvent.Ability.NULLIFICATION)) continue;
-            target.invulnerableTime = 0;
-            target.hurtTime = 0;
+        List<LivingEntity> nearby = level.getEntitiesOfClass(LivingEntity.class, area, entity ->
+                entity != wearer && !entity.isRemoved() && entity.distanceToSqr(wearer) <= radiusSquared);
+
+        // The two Glitched passives share their broad-phase query. Their individual
+        // target gates remain separate, so gameplay results are unchanged.
+        if (nullification) {
+            for (LivingEntity target : nearby) {
+                if (!target.isAlive() || !isHostile(target)
+                        || !canAffectCrownTarget(wearer, target, CrownAbilityTargetEvent.Ability.NULLIFICATION)) continue;
+                target.invulnerableTime = 0;
+                target.hurtTime = 0;
+            }
+        }
+        if (!execution) return;
+        double threshold = CrownServerConfig.GLITCHED_EXECUTION_THRESHOLD.get();
+        for (LivingEntity target : nearby) {
+            if (!canAffectCrownTarget(wearer, target, CrownAbilityTargetEvent.Ability.EXECUTION)) continue;
+            // Angelic Crown's triggered four-second invulnerability explicitly
+            // resists the normal Glitched Crown execution aura.
+            if (target instanceof ServerPlayer player && NewCrownLogic.isAngelicInvulnerable(player)) continue;
+            float hp = rawHealth(target);
+            float max = target.getMaxHealth();
+            if (hp > 0.0F && max > 0.0F && hp < max * threshold) {
+                forceDeathFromCrown(wearer, target, wearer.damageSources().playerAttack(wearer));
+            }
         }
     }
 
@@ -1185,27 +1205,6 @@ public final class CrownLogic {
             target.setInvulnerable(false);
             target.invulnerableTime = 0;
             target.hurtTime = 0;
-        }
-    }
-
-    /** Glitched Crown passive execution: every unprotected living target below 10% HP dies as FORCED_DEATH. */
-    private static void executeNearbyCriticalEntities(ServerPlayer wearer, double radius) {
-        if (!(wearer.level() instanceof ServerLevel level) || !isNerfedCrownActive(wearer)) return;
-        AABB area = wearer.getBoundingBox().inflate(radius);
-        double radiusSquared = radius * radius;
-        double threshold = CrownServerConfig.GLITCHED_EXECUTION_THRESHOLD.get();
-        for (LivingEntity target : level.getEntitiesOfClass(LivingEntity.class, area, entity ->
-                entity != wearer && !entity.isRemoved()
-                        && entity.distanceToSqr(wearer) <= radiusSquared)) {
-            if (!canAffectCrownTarget(wearer, target, CrownAbilityTargetEvent.Ability.EXECUTION)) continue;
-            // Angelic Crown's triggered four-second invulnerability explicitly
-            // resists the normal Glitched Crown execution aura.
-            if (target instanceof ServerPlayer player && NewCrownLogic.isAngelicInvulnerable(player)) continue;
-            float hp = rawHealth(target);
-            float max = target.getMaxHealth();
-            if (hp > 0.0F && max > 0.0F && hp < max * threshold) {
-                forceDeathFromCrown(wearer, target, wearer.damageSources().playerAttack(wearer));
-            }
         }
     }
 

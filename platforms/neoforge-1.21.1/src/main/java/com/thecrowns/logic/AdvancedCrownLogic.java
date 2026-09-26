@@ -63,6 +63,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /** Mechanics for Crowns added after the original Tier I-III set. */
 public final class AdvancedCrownLogic {
+    private static final int CURSED_TRANSFORM_SCAN_INTERVAL = 10;
+    private static final int TIME_WARP_SCAN_INTERVAL = 2;
     public static final int TIME_REWIND_COOLDOWN_TICKS = 300 * 20;
     public static final int TIME_WARP_COOLDOWN_TICKS = 180 * 20;
     public static final int TIME_WARP_DURATION_TICKS = 15 * 20;
@@ -84,6 +86,7 @@ public final class AdvancedCrownLogic {
     private static final String NBT_TIME_REWIND_READY = "thecrowns_time_rewind_ready";
     private static final String NBT_TIME_WARP_READY = "thecrowns_time_warp_ready";
     private static final String NBT_TIME_WARP_UNTIL = "thecrowns_time_warp_until";
+    private static final String NBT_TIME_WARP_NEXT_SCAN = "thecrowns_time_warp_next_scan";
     private static final String NBT_TIME_LAST_COMBAT = "thecrowns_time_last_combat";
     private static final String NBT_TIME_SNAPSHOT = "thecrowns_time_snapshot";
     private static final String NBT_TIME_REWIND_CAST_UNTIL = "thecrowns_time_rewind_cast_until";
@@ -225,7 +228,7 @@ public final class AdvancedCrownLogic {
 
     public static void tickPlayer(ServerPlayer player) {
         MixinDiagnostics.auditAfterPlayerJoin(player);
-        transformCursedCrowns(player);
+        if (player.tickCount % CURSED_TRANSFORM_SCAN_INTERVAL == 0) transformCursedCrowns(player);
         maintainCursedBinding(player);
         restoreDeathKeptCrowns(player);
         syncPlayerAttributes(player);
@@ -244,8 +247,11 @@ public final class AdvancedCrownLogic {
 
     public static void tickLiving(LivingEntity entity) {
         if (entity.level().isClientSide) return;
-        long now = entity.level().getGameTime();
         CompoundTag data = entity.getPersistentData();
+        // LivingTickEvent is delivered for every loaded creature. Entities without one of
+        // these temporary Crown states have no modifier or NBT cleanup to perform.
+        if (!hasLivingRuntimeState(data)) return;
+        long now = entity.level().getGameTime();
 
         tickTimeStopState(entity, now);
 
@@ -262,6 +268,14 @@ public final class AdvancedCrownLogic {
         if (!transferredCurse && data.contains(NBT_CURSE_TRANSFER_UNTIL)) data.remove(NBT_CURSE_TRANSFER_UNTIL);
 
         tickFrostState(entity, now);
+    }
+
+    private static boolean hasLivingRuntimeState(CompoundTag data) {
+        return data.contains(NBT_TIME_STOPPED_UNTIL)
+                || data.contains(NBT_TIME_SLOWED_UNTIL)
+                || data.contains(NBT_CURSE_TRANSFER_UNTIL)
+                || data.contains(NBT_FROZEN_UNTIL)
+                || data.contains(NBT_FROST_STACKS);
     }
 
     public static boolean isTimeStopped(Entity entity) {
@@ -516,6 +530,9 @@ public final class AdvancedCrownLogic {
                 if (stacks > 0) data.putLong(NBT_FROST_NEXT_DECAY, next + frostDecayTicks());
                 else data.remove(NBT_FROST_NEXT_DECAY);
             }
+        } else {
+            data.remove(NBT_FROST_STACKS);
+            data.remove(NBT_FROST_NEXT_DECAY);
         }
         setModifier(entity, Attributes.MOVEMENT_SPEED, FROST_SLOW, "frost_stack_slow",
                 stacks > 0 ? -Math.min(1.0D, CrownServerConfig.FROST_SLOW_PER_STACK.get() * stacks) : 0.0D,
@@ -768,6 +785,7 @@ public final class AdvancedCrownLogic {
         if (now < data.getLong(NBT_TIME_WARP_READY)) return;
         data.putLong(NBT_TIME_WARP_READY, now + temporalWarpCooldownTicks());
         data.putLong(NBT_TIME_WARP_UNTIL, now + temporalWarpDurationTicks());
+        data.putLong(NBT_TIME_WARP_NEXT_SCAN, now);
         TIME_WARP_PROJECTILES.put(player.getUUID(), ConcurrentHashMap.newKeySet());
         syncTooltipState(player);
     }
@@ -780,10 +798,13 @@ public final class AdvancedCrownLogic {
             if (data.contains(NBT_TIME_WARP_UNTIL)) {
                 removeTimeWarpProjectiles(player);
                 data.remove(NBT_TIME_WARP_UNTIL);
+                data.remove(NBT_TIME_WARP_NEXT_SCAN);
             }
             return;
         }
         if (!(player.level() instanceof ServerLevel level)) return;
+        if (now < data.getLong(NBT_TIME_WARP_NEXT_SCAN)) return;
+        data.putLong(NBT_TIME_WARP_NEXT_SCAN, now + TIME_WARP_SCAN_INTERVAL);
         double radius = CrownServerConfig.TEMPORAL_WARP_RADIUS.get();
         double radiusSqr = radius * radius;
         double stopRadius = Math.min(radius, CrownServerConfig.TEMPORAL_WARP_STOP_RADIUS.get());
@@ -794,14 +815,14 @@ public final class AdvancedCrownLogic {
             CompoundTag livingData = living.getPersistentData();
             if (living.distanceToSqr(player) <= stopRadiusSqr
                     && !(living instanceof Player) && !CrownLogic.isBoss(living)) {
-                livingData.putLong(NBT_TIME_STOPPED_UNTIL, now + 2L);
+                livingData.putLong(NBT_TIME_STOPPED_UNTIL, now + TIME_WARP_SCAN_INTERVAL + 1L);
                 if (!livingData.contains(NBT_TIME_STOPPED_X)) {
                     livingData.putDouble(NBT_TIME_STOPPED_X, living.getX());
                     livingData.putDouble(NBT_TIME_STOPPED_Y, living.getY());
                     livingData.putDouble(NBT_TIME_STOPPED_Z, living.getZ());
                 }
             } else {
-                livingData.putLong(NBT_TIME_SLOWED_UNTIL, now + 2L);
+                livingData.putLong(NBT_TIME_SLOWED_UNTIL, now + TIME_WARP_SCAN_INTERVAL + 1L);
             }
         }
         Set<UUID> frozen = TIME_WARP_PROJECTILES.computeIfAbsent(player.getUUID(), k -> ConcurrentHashMap.newKeySet());

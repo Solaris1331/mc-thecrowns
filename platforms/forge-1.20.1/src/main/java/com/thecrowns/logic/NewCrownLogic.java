@@ -50,6 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /** Gameplay implementation for the non-Glitched Crown families introduced in The Crowns 1.3.0. */
 public final class NewCrownLogic {
+    private static final int DARKENED_WARDEN_SCAN_INTERVAL = 10;
     /** Technical cap with ample headroom below Float.MAX_VALUE; prevents NaN/Infinity propagation through modded damage stacks. */
     public static final float CROWN_DAMAGE_SAFETY_CAP = 1.0E30F;
     public static final int BLOODY_MAX_STACKS = 40;
@@ -960,6 +961,7 @@ public final class NewCrownLogic {
     }
 
     private static void tickDarkenedWardenAffinity(ServerPlayer player, long now) {
+        if (now % DARKENED_WARDEN_SCAN_INTERVAL != 0L) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         AABB box = player.getBoundingBox().inflate(96.0D);
         for (Warden warden : level.getEntitiesOfClass(Warden.class, box, Warden::isAlive)) {

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Reduced server-side tick overhead without changing Crown stats, ranges, or ability durations: entities with no active Crown runtime state now skip the Advanced Crown living-tick work.
+- Changed Time Warp to search every two ticks while keeping slow/stop states active until the next scan.
+- Changed Cursed Crown inventory conversion and Darkened Crown Warden scans to ten-tick intervals.
+- Combined the two Glitched Crown passive nearby-entity broad-phase searches into one shared query.
+- Applied the same runtime scheduling changes to the NeoForge 1.21.1 source.
+
 ## 1.0.4
 
 - Added the Shadow Crown and Abyssal Crown, including Crown Builder recipes, localized tooltips, Curios support, Lorebook entries, and dedicated item/armor textures.
